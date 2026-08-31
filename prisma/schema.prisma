@@ -1,0 +1,452 @@
+// ============================================================
+// SISTEM PELAYANAN DIGITAL BAPPERIDA KABUPATEN PINRANG
+// Schema basis data - berdasarkan Dokumen Desain Sistem v1.0
+// Satu aplikasi terpadu, satu basis data logis,
+// pemisahan akses berbasis role dan scope OPD.
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------- Identity & Access ----------
+
+model User {
+  id          String       @id @default(cuid())
+  opdId       String?
+  nama        String
+  email       String       @unique
+  passwordHash String
+  role        String // ADMIN | BAPPERIDA | OPD
+  status      String       @default("AKTIF") // AKTIF | NONAKTIF
+  lastLoginAt DateTime?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  opd            Opd?             @relation(fields: [opdId], references: [id])
+  artikels       Artikel[]        @relation("ArtikelAuthor")
+  notifikasiDibaca NotifikasiPenerima[]
+  activityLogs   ActivityLog[]    @relation("ActorLogs")
+  perencanaPeriode PeriodePengisian[] @relation("PeriodeCreator")
+  publikasis     Publikasi[]      @relation("PublikasiCreator")
+  verifikasis    Verifikasi[]     @relation("VerifierLogs")
+}
+
+// ---------- Master Data ----------
+
+model Opd {
+  id        String   @id @default(cuid())
+  kode      String   @unique
+  nama      String
+  singkatan String
+  slug      String   @unique
+  status    String   @default("AKTIF") // AKTIF | NONAKTIF
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  profil      OpdProfile?
+  users       User[]
+  penugasan   PenugasanOpd[]
+  artikel     Artikel[]
+  publikasi   Publikasi[]
+  notifikasi  Notifikasi[]
+  datasetDetail DatasetPublikDetail[]
+}
+
+model OpdProfile {
+  id             String  @id @default(cuid())
+  opdId          String  @unique
+  logoEmoji      String  @default("🏛️")
+  warnaTema      String  @default("teal")
+  deskripsi      String?
+  visi           String?
+  misi           String? // JSON array
+  alamat         String?
+  telepon        String?
+  emailPublic    String?
+  heroRingkasan  String?
+  updatedAt      DateTime @updatedAt
+
+  opd Opd @relation(fields: [opdId], references: [id])
+}
+
+model Wilayah {
+  id         String  @id @default(cuid())
+  kodeBps    String  @unique
+  nama       String
+  jenis      String  @default("KECAMATAN")
+  geometry   String? // GeoJSON Polygon (string JSON)
+  centroidLat Float
+  centroidLng Float
+  isActive   Boolean @default(true)
+
+  detailJawaban   DetailJawaban[]
+  datasetDetails  DatasetPublikDetail[]
+}
+
+// ---------- Indikator ----------
+
+model Indikator {
+  id          String  @id @default(cuid())
+  kode        String  @unique
+  nama        String
+  deskripsi   String?
+  satuanDefault String?
+  warna       String  @default("teal")
+  isActive    Boolean @default(true)
+  sortOrder   Int     @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  aspek       AspekIndikator[]
+  penugasan   PenugasanOpd[]
+  dataset     DatasetPublik[]
+  visualisasi KonfigurasiVisualisasi?
+}
+
+model AspekIndikator {
+  id          String  @id @default(cuid())
+  indikatorId String
+  nama        String
+  deskripsi   String?
+  sortOrder   Int     @default(0)
+
+  indikator   Indikator @relation(fields: [indikatorId], references: [id])
+  pertanyaan  PertanyaanIndikator[]
+}
+
+model PertanyaanIndikator {
+  id          String  @id @default(cuid())
+  aspekId     String
+  kode        String  @unique
+  pertanyaan  String
+  tipeJawaban String  @default("NUMBER") // TEXT | NUMBER | DATE | BOOLEAN | OPTIONS | FILE
+  wajibDefault Boolean @default(true)
+  dimensiWilayah Boolean @default(false) // nilai per kecamatan
+  satuan      String?
+  helpText    String?
+  sortOrder   Int     @default(0)
+  isActive    Boolean @default(true)
+
+  aspek       AspekIndikator @relation(fields: [aspekId], references: [id])
+  opsi        OpsiPertanyaan[]
+  detailJawaban DetailJawaban[]
+  penugasanDetail PenugasanPertanyaan[]
+}
+
+model OpsiPertanyaan {
+  id           String @id @default(cuid())
+  pertanyaanId String
+  label        String
+  nilai        String
+  sortOrder    Int    @default(0)
+
+  pertanyaan PertanyaanIndikator @relation(fields: [pertanyaanId], references: [id])
+}
+
+// ---------- Data Collection ----------
+
+model PeriodePengisian {
+  id        String   @id @default(cuid())
+  kode      String   @unique
+  nama      String
+  startDate DateTime
+  endDate   DateTime
+  status    String   @default("AKTIF") // AKTIF | DITUTUP
+  lockAt    DateTime?
+  createdBy String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  penugasan  PenugasanOpd[]
+  dataset    DatasetPublik[]
+  notifikasi Notifikasi[]
+  creator    User? @relation("PeriodeCreator", fields: [createdBy], references: [id])
+}
+
+model PenugasanOpd {
+  id          String   @id @default(cuid())
+  periodeId   String
+  indikatorId String
+  opdId       String
+  deadline    DateTime?
+  status      String   @default("AKTIF") // AKTIF | SELESAI
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  periode    PeriodePengisian @relation(fields: [periodeId], references: [id])
+  indikator  Indikator        @relation(fields: [indikatorId], references: [id])
+  opd        Opd              @relation(fields: [opdId], references: [id])
+  pertanyaanTarget PenugasanPertanyaan[]
+  jawaban    JawabanOpd[]
+  progres    ProgresPengisian?
+  notifikasi Notifikasi[]
+
+  @@unique([periodeId, indikatorId, opdId])
+}
+
+model PenugasanPertanyaan {
+  id          String  @id @default(cuid())
+  penugasanId String
+  pertanyaanId String
+  required    Boolean @default(true)
+
+  penugasan  PenugasanOpd        @relation(fields: [penugasanId], references: [id])
+  pertanyaan PertanyaanIndikator @relation(fields: [pertanyaanId], references: [id])
+
+  @@unique([penugasanId, pertanyaanId])
+}
+
+model JawabanOpd {
+  id         String   @id @default(cuid())
+  penugasanId String
+  version    Int      @default(1)
+  status     String   @default("DRAFT") // DRAFT | DIKIRIM | PERLU_PERBAIKAN | TERVERIFIKASI
+  submittedAt DateTime?
+  lockedAt   DateTime?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  penugasan  PenugasanOpd   @relation(fields: [penugasanId], references: [id])
+  detail     DetailJawaban[]
+  verifikasi Verifikasi[]
+  riwayat    RiwayatStatusJawaban[]
+
+  @@unique([penugasanId, version])
+}
+
+model DetailJawaban {
+  id           String  @id @default(cuid())
+  jawabanId    String
+  pertanyaanId String
+  wilayahId    String?
+  valueText    String?
+  valueNumber  Float?
+  valueDate    DateTime?
+  valueBoolean Boolean?
+  isPublic     Boolean @default(false)
+  notes        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  jawaban    JawabanOpd          @relation(fields: [jawabanId], references: [id])
+  pertanyaan PertanyaanIndikator @relation(fields: [pertanyaanId], references: [id])
+  wilayah    Wilayah?            @relation(fields: [wilayahId], references: [id])
+
+  @@index([jawabanId, pertanyaanId])
+}
+
+// ---------- Monitoring & Verification ----------
+
+model Verifikasi {
+  id         String   @id @default(cuid())
+  jawabanId  String
+  verifierId String
+  status     String // TERVERIFIKASI | PERLU_PERBAIKAN
+  catatan    String?
+  verifiedAt DateTime @default(now())
+
+  jawaban  JawabanOpd @relation(fields: [jawabanId], references: [id])
+  verifier User       @relation("VerifierLogs", fields: [verifierId], references: [id])
+}
+
+model RiwayatStatusJawaban {
+  id        String   @id @default(cuid())
+  jawabanId String
+  statusFrom String?
+  statusTo  String
+  changedBy String?
+  reason    String?
+  changedAt DateTime @default(now())
+
+  jawaban JawabanOpd @relation(fields: [jawabanId], references: [id])
+}
+
+model ProgresPengisian {
+  id             String   @id @default(cuid())
+  penugasanId    String   @unique
+  requiredCount  Int      @default(0)
+  filledCount    Int      @default(0)
+  percent        Float    @default(0)
+  lastActivityAt DateTime?
+  calculatedAt   DateTime @default(now())
+
+  penugasan PenugasanOpd @relation(fields: [penugasanId], references: [id])
+}
+
+// ---------- Content & Publication ----------
+
+model KategoriArtikel {
+  id       String  @id @default(cuid())
+  nama     String
+  slug     String  @unique
+  isActive Boolean @default(true)
+
+  artikel ArtikelKategori[]
+}
+
+model Artikel {
+  id                String   @id @default(cuid())
+  opdId             String?
+  judul             String
+  slug              String   @unique
+  ringkasan         String
+  isi               String
+  thumbnailEmoji    String   @default("📰")
+  status            String   @default("DRAFT") // DRAFT | PUBLISHED
+  featured          Boolean  @default(false)
+  showOnMainPortal  Boolean  @default(false)
+  publishedAt       DateTime?
+  createdBy         String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  opd       Opd?            @relation(fields: [opdId], references: [id])
+  kategori  ArtikelKategori[]
+  creator   User?           @relation("ArtikelAuthor", fields: [createdBy], references: [id])
+}
+
+model ArtikelKategori {
+  id         String @id @default(cuid())
+  artikelId  String
+  kategoriId String
+
+  artikel  Artikel        @relation(fields: [artikelId], references: [id])
+  kategori KategoriArtikel @relation(fields: [kategoriId], references: [id])
+
+  @@unique([artikelId, kategoriId])
+}
+
+model Publikasi {
+  id          String   @id @default(cuid())
+  opdId       String?
+  judul       String
+  slug        String   @unique
+  deskripsi   String
+  tahun       Int?
+  jenisFile   String   @default("PDF") // PDF | XLSX | CSV
+  status      String   @default("DRAFT") // DRAFT | PUBLISHED
+  visibility  String   @default("PUBLIC") // PUBLIC | INTERNAL
+  downloadCount Int    @default(0)
+  publishedAt DateTime?
+  createdBy   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  opd     Opd?    @relation(fields: [opdId], references: [id])
+  creator User?   @relation("PublikasiCreator", fields: [createdBy], references: [id])
+}
+
+// ---------- Notification ----------
+
+model Notifikasi {
+  id          String   @id @default(cuid())
+  type        String   @default("PENGINGAT") // PENGINGAT | VERIFIKASI | SISTEM
+  title       String
+  message     String
+  opdId       String?
+  periodeId   String?
+  penugasanId String?
+  createdBy   String?
+  createdAt   DateTime @default(now())
+
+  opd       Opd?              @relation(fields: [opdId], references: [id])
+  periode   PeriodePengisian? @relation(fields: [periodeId], references: [id])
+  penugasan PenugasanOpd?     @relation(fields: [penugasanId], references: [id])
+  penerima  NotifikasiPenerima[]
+}
+
+model NotifikasiPenerima {
+  id             String   @id @default(cuid())
+  notifikasiId   String
+  userId         String
+  sentAt         DateTime @default(now())
+  readAt         DateTime?
+  deliveryStatus String   @default("TERKIRIM")
+
+  notifikasi Notifikasi @relation(fields: [notifikasiId], references: [id])
+  user       User       @relation(fields: [userId], references: [id])
+
+  @@unique([notifikasiId, userId])
+}
+
+// ---------- Visualization & Public Dataset ----------
+
+model KonfigurasiVisualisasi {
+  id           String @id @default(cuid())
+  indikatorId  String @unique
+  chartType    String @default("CHOROPLETH") // CHOROPLETH | BAR | LINE | DONUT
+  aggregation  String @default("SUM") // SUM | AVG | COUNT
+  satuan       String?
+  paletteKey   String @default("teal")
+  decimalPlaces Int   @default(0)
+  visibility   String @default("PUBLIC")
+  configJson   String?
+
+  indikator Indikator @relation(fields: [indikatorId], references: [id])
+}
+
+model DatasetPublik {
+  id          String   @id @default(cuid())
+  indikatorId String
+  periodeId   String
+  version     Int      @default(1)
+  status      String   @default("PUBLISHED") // PUBLISHED | UNPUBLISHED
+  publishedAt DateTime @default(now())
+  notes       String?
+
+  indikator Indikator        @relation(fields: [indikatorId], references: [id])
+  periode   PeriodePengisian @relation(fields: [periodeId], references: [id])
+  detail    DatasetPublikDetail[]
+}
+
+model DatasetPublikDetail {
+  id           String  @id @default(cuid())
+  datasetId    String
+  opdId        String?
+  wilayahId    String?
+  metricKey    String  @default("nilai")
+  metricValue  Float?
+  metricText   String?
+
+  dataset DatasetPublik @relation(fields: [datasetId], references: [id])
+  opd     Opd?          @relation(fields: [opdId], references: [id])
+  wilayah Wilayah?      @relation(fields: [wilayahId], references: [id])
+
+  @@index([datasetId, wilayahId])
+}
+
+// ---------- System ----------
+
+model SiteSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  isPublic  Boolean  @default(true)
+  updatedAt DateTime @updatedAt
+}
+
+model ActivityLog {
+  id             String   @id @default(cuid())
+  actorUserId    String?
+  actorNama      String?
+  actingRole     String?
+  opdScopeNama   String?
+  action         String
+  entityType     String
+  entityId       String?
+  detail         String?
+  ipAddress      String?
+  userAgent      String?
+  createdAt      DateTime @default(now())
+
+  actor User? @relation("ActorLogs", fields: [actorUserId], references: [id])
+
+  @@index([createdAt])
+}
