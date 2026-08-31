@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function BerandaPage() {
   const [settings, opdList, artikelFeatured, artikelTerbaru, publikasiList, kecamatanCount, datasetCount] =

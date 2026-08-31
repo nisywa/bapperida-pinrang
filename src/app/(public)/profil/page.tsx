@@ -2,7 +2,7 @@ import { db } from "@/lib/db";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Landmark, Target, Eye, Building2, MapPinned, ShieldCheck } from "lucide-react";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export const metadata = { title: "Profil Bapperida" };
 

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { FileDown, Building2 } from "lucide-react";
 import { formatTanggal } from "@/lib/constants";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export const metadata = { title: "Publikasi" };
 

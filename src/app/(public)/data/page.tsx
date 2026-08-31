@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 import { ShieldCheck } from "lucide-react";
 import { formatTanggal } from "@/lib/constants";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export const metadata = { title: "Data & Statistik" };
 
