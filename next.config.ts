@@ -56,8 +56,9 @@ import type { NextConfig } from "next";
 })();
 
 const nextConfig: NextConfig = {
-  output: "standalone",
-  /* config options here */
+  // NOTE: "standalone" output removed — it is meant for self-hosting (Docker/
+  // VPS) and causes ENOENT next-server.js.nft.json build failures with
+  // Turbopack builds on Vercel. For self-hosting use: bun run build:selfhost
   typescript: {
     ignoreBuildErrors: true,
   },
