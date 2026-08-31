@@ -11,24 +11,47 @@ import type { NextConfig } from "next";
 // ------------------------------------------------------------
 (function resolveDatabaseUrl() {
   try {
-    const envPath = path.join(process.cwd(), ".env");
-    const content = fs.readFileSync(envPath, "utf8");
-    const match = content.match(/^DATABASE_URL="?([^"\r\n]+)"?\s*$/m);
-    if (match) {
-      const current = process.env.DATABASE_URL;
-      // Only fill the gap when nothing valid is set (e.g. sandbox injects a
-      // stale SQLite file: URL). NEVER override a proper external DATABASE_URL
-      // such as the one configured in Vercel Environment Variables.
-      if (!current || current.startsWith("file:")) {
-        process.env.DATABASE_URL = match[1];
+    let current = process.env.DATABASE_URL;
+
+    // 1) Fill the gap when nothing valid is set (e.g. sandbox injects a stale
+    //    SQLite file: URL). NEVER override a proper external DATABASE_URL such
+    //    as the one configured in Vercel Environment Variables.
+    if (!current || current.startsWith("file:")) {
+      const envPath = path.join(process.cwd(), ".env");
+      const content = fs.readFileSync(envPath, "utf8");
+      const match = content.match(/^DATABASE_URL="?([^"\r\n]+)"?\s*$/m);
+      if (match) {
+        current = match[1];
         console.log(
           "[next.config] DATABASE_URL resolved from .env:",
-          match[1].replace(/:[^:@/]*@/, ":****@")
+          current.replace(/:[^:@/]*@/, ":****@")
         );
       }
     }
+
+    // 2) Supabase pooler tuning: build-time prerendering renders many ISR
+    //    pages in parallel and starves a connection_limit=1 pool (pool
+    //    timeout during `next build` on Vercel). Give the build phase a
+    //    larger pool; keep the serverless runtime frugal (1 per instance).
+    if (current && current.includes("pooler.supabase.com")) {
+      const isBuildPhase =
+        process.env.NEXT_PHASE === "phase-production-build";
+      const url = new URL(current);
+      if (isBuildPhase) {
+        url.searchParams.set("connection_limit", "8");
+        url.searchParams.set("pool_timeout", "20");
+        console.log(
+          "[next.config] BUILD phase: Prisma pool connection_limit=8, pool_timeout=20"
+        );
+      } else {
+        if (!url.searchParams.get("connection_limit")) {
+          url.searchParams.set("connection_limit", "1");
+        }
+      }
+      process.env.DATABASE_URL = url.toString();
+    }
   } catch {
-    // .env missing -> keep whatever is set
+    // .env missing / URL parse failure -> keep whatever is set
   }
 })();
 
