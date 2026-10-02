@@ -1,26 +1,46 @@
 import { db } from "@/lib/db";
 import { getSession } from "@/lib/auth";
-import { getMonitoringRows } from "@/lib/monitoring";
+import { filterMonitoringRows, getMonitoringRows } from "@/lib/monitoring";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatTanggal, formatNumber, JAWABAN_STATUS } from "@/lib/constants";
-import { MonitorCheck, AlertTriangle, Send, FileSearch, CalendarClock } from "lucide-react";
+import { MonitorCheck, AlertTriangle, Send, FileSearch, CalendarClock, Download, Filter, RotateCcw } from "lucide-react";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Monitoring Progres" };
 
-export default async function MonitoringPage() {
+type SearchParams = Promise<Record<string, string | string[] | undefined>>;
+
+function param(value: string | string[] | undefined) {
+  return Array.isArray(value) ? value[0] ?? "" : value ?? "";
+}
+
+export default async function MonitoringPage({ searchParams }: { searchParams: SearchParams }) {
   const session = await getSession();
   if (!session || session.role === "OPD") {
     return <p className="text-sm text-slate-600">Akses ditolak.</p>;
   }
 
-  const [rows, periodeList] = await Promise.all([
-    getMonitoringRows(),
+  const query = await searchParams;
+  const periodeId = param(query.periode);
+  const opdId = param(query.opd);
+  const indikatorKode = param(query.indikator);
+  const status = param(query.status);
+
+  const [allRows, periodeList, opdList, indikatorList] = await Promise.all([
+    getMonitoringRows(periodeId || undefined),
     db.periodePengisian.findMany({ orderBy: { startDate: "desc" } }),
+    db.opd.findMany({ where: { status: "AKTIF" }, orderBy: { sortOrder: "asc" } }),
+    db.indikator.findMany({ where: { isActive: true }, orderBy: { sortOrder: "asc" } }),
   ]);
+  const rows = filterMonitoringRows(allRows, { opdId, indikatorKode, status });
+  const exportParams = new URLSearchParams();
+  if (periodeId) exportParams.set("periode", periodeId);
+  if (opdId) exportParams.set("opd", opdId);
+  if (indikatorKode) exportParams.set("indikator", indikatorKode);
+  if (status) exportParams.set("status", status);
   const now = new Date();
   const overdue = rows.filter(
     (r) => r.deadline && new Date(r.deadline) < now && !["TERVERIFIKASI", "DIKIRIM"].includes(r.status)
@@ -46,10 +66,64 @@ export default async function MonitoringPage() {
       </div>
 
       <Card className="border shadow-sm">
+        <CardContent className="p-4">
+          <form method="get" className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+            <label className="space-y-1 text-xs font-medium text-slate-600">
+              Periode
+              <select name="periode" defaultValue={periodeId} className="h-10 w-full rounded-lg border bg-white px-3 text-sm">
+                <option value="">Periode aktif</option>
+                {periodeList.map((periode) => <option key={periode.id} value={periode.id}>{periode.nama}</option>)}
+              </select>
+            </label>
+            <label className="space-y-1 text-xs font-medium text-slate-600">
+              OPD
+              <select name="opd" defaultValue={opdId} className="h-10 w-full rounded-lg border bg-white px-3 text-sm">
+                <option value="">Semua OPD</option>
+                {opdList.map((opd) => <option key={opd.id} value={opd.id}>{opd.singkatan}</option>)}
+              </select>
+            </label>
+            <label className="space-y-1 text-xs font-medium text-slate-600">
+              Indikator
+              <select name="indikator" defaultValue={indikatorKode} className="h-10 w-full rounded-lg border bg-white px-3 text-sm">
+                <option value="">Semua indikator</option>
+                {indikatorList.map((indikator) => <option key={indikator.id} value={indikator.kode}>{indikator.nama}</option>)}
+              </select>
+            </label>
+            <label className="space-y-1 text-xs font-medium text-slate-600">
+              Status
+              <select name="status" defaultValue={status} className="h-10 w-full rounded-lg border bg-white px-3 text-sm">
+                <option value="">Semua status</option>
+                <option value="BELUM">Belum Diisi</option>
+                <option value="DRAFT">Draft</option>
+                <option value="DIKIRIM">Dikirim</option>
+                <option value="PERLU_PERBAIKAN">Perlu Perbaikan</option>
+                <option value="TERVERIFIKASI">Terverifikasi</option>
+              </select>
+            </label>
+            <div className="flex items-end gap-2">
+              <Button type="submit" className="flex-1 bg-emerald-600 hover:bg-emerald-700">
+                <Filter className="mr-2 h-4 w-4" /> Terapkan
+              </Button>
+              <Button asChild type="button" variant="outline" size="icon" title="Reset filter">
+                <Link href="/backoffice/monitoring"><RotateCcw className="h-4 w-4" /></Link>
+              </Button>
+            </div>
+          </form>
+          <div className="mt-3 flex justify-end">
+            <Button asChild variant="outline" size="sm" className="border-emerald-200 text-emerald-700">
+              <a href={`/api/backoffice/monitoring/export?${exportParams.toString()}`}>
+                <Download className="mr-2 h-4 w-4" /> Ekspor CSV sesuai filter
+              </a>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="border shadow-sm">
         <CardHeader className="pb-3">
           <CardTitle className="text-base">Tabel Monitoring ({rows.length} penugasan)</CardTitle>
           <p className="text-xs text-slate-500">
-            Periode aktif: {periodeList.find((p) => p.status === "AKTIF")?.nama ?? "-"} · Total periode terdaftar: {periodeList.length}
+            Periode: {periodeList.find((p) => p.id === periodeId)?.nama ?? periodeList.find((p) => p.status === "AKTIF")?.nama ?? "-"} · Menampilkan {rows.length} dari {allRows.length} penugasan
           </p>
         </CardHeader>
         <CardContent className="overflow-x-auto p-0">

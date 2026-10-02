@@ -50,5 +50,8 @@ test
 prompt
 
 server.log
+.postgres-data/
+/storage/uploads/
+/storage/article-images/
 # Skills directory
 /skills/

@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight } from "lucide-react";
 import { formatTanggal } from "@/lib/constants";
+import { ArticleIcon } from "@/components/public/article-icon";
 
 export const revalidate = 60;
 
@@ -38,7 +39,7 @@ export default async function OpdBeritaPage({
           <Link key={a.id} href={`/berita/${a.slug}`} className="group">
             <Card className="h-full border shadow-sm transition-all group-hover:-translate-y-0.5 group-hover:border-emerald-200 group-hover:shadow-md">
               <CardContent className="flex h-full flex-col p-6">
-                <span className="text-4xl">{a.thumbnailEmoji}</span>
+                <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#e6f0e9] text-[#56816c] ring-1 ring-[#d4e4d8]"><ArticleIcon title={a.judul} photoUrl={a.thumbnailUrl} className="h-6 w-6" /></span>
                 <h2 className="mt-4 font-semibold leading-snug text-slate-900 group-hover:text-emerald-700">
                   {a.judul}
                 </h2>

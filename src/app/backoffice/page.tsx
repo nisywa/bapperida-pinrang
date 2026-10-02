@@ -57,7 +57,7 @@ async function AdminDashboard() {
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-6">
         {kpis.map((k) => (
-          <Card key={k.label} className="border shadow-sm">
+          <Card key={k.label} className="border-white/80 bg-white/90 transition-all hover:-translate-y-0.5 hover:border-[#cfddd3] hover:shadow-md">
             <CardContent className="p-4">
               <span className={`inline-flex h-9 w-9 items-center justify-center rounded-lg ${k.color}`}>
                 <k.icon className="h-4.5 w-4.5" />
@@ -70,7 +70,7 @@ async function AdminDashboard() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <Card className="border shadow-sm">
+        <Card className="border-white/80 bg-white/90">
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-base">
               <Activity className="h-4.5 w-4.5 text-emerald-600" /> Aktivitas Terbaru
@@ -96,7 +96,7 @@ async function AdminDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border shadow-sm">
+        <Card className="border-white/80 bg-white/90">
           <CardHeader className="pb-3">
             <CardTitle className="text-base">Tautan Cepat Administrasi</CardTitle>
           </CardHeader>
@@ -163,7 +163,7 @@ async function BapperidaDashboard() {
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6">
         {kpis.map((k) => (
-          <Card key={k.label} className="border shadow-sm">
+          <Card key={k.label} className="border-white/80 bg-white/90 transition-all hover:-translate-y-0.5 hover:border-[#cfddd3] hover:shadow-md">
             <CardContent className="p-4">
               <span className={`inline-flex h-9 w-9 items-center justify-center rounded-lg ${k.color}`}>
                 <k.icon className="h-4.5 w-4.5" />
@@ -176,7 +176,7 @@ async function BapperidaDashboard() {
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1fr_2fr]">
-        <Card className="border shadow-sm">
+        <Card className="border-white/80 bg-white/90">
           <CardHeader className="pb-2">
             <CardTitle className="text-base">Distribusi Status</CardTitle>
           </CardHeader>
@@ -185,7 +185,7 @@ async function BapperidaDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border shadow-sm">
+        <Card className="border-white/80 bg-white/90">
           <CardHeader className="pb-2">
             <CardTitle className="text-base">Progres per OPD</CardTitle>
           </CardHeader>
@@ -196,7 +196,7 @@ async function BapperidaDashboard() {
       </div>
 
       {/* Tabel monitoring ringkas */}
-      <Card className="border shadow-sm">
+      <Card className="border-white/80 bg-white/90">
         <CardHeader className="pb-3">
           <CardTitle className="text-base">Status Penugasan Terkini</CardTitle>
         </CardHeader>
@@ -295,7 +295,7 @@ async function OpdDashboard({ session }: { session: NonNullable<Awaited<ReturnTy
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-5">
         {kpis.map((k) => (
-          <Card key={k.label} className="border shadow-sm">
+          <Card key={k.label} className="border-white/80 bg-white/90 transition-all hover:-translate-y-0.5 hover:border-[#cfddd3] hover:shadow-md">
             <CardContent className="p-4">
               <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
                 <k.icon className="h-4.5 w-4.5" />
@@ -308,7 +308,7 @@ async function OpdDashboard({ session }: { session: NonNullable<Awaited<ReturnTy
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <Card className="border shadow-sm">
+        <Card className="border-white/80 bg-white/90">
           <CardHeader className="pb-3">
             <CardTitle className="text-base">Daftar Kewajiban</CardTitle>
           </CardHeader>
@@ -345,7 +345,7 @@ async function OpdDashboard({ session }: { session: NonNullable<Awaited<ReturnTy
           </CardContent>
         </Card>
 
-        <Card className="border shadow-sm">
+        <Card className="border-white/80 bg-white/90">
           <CardHeader className="pb-3">
             <CardTitle className="text-base">Notifikasi Terbaru</CardTitle>
           </CardHeader>

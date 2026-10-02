@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { logActivity } from "@/lib/audit";
 import { requireInternal, hashPassword } from "@/lib/actions/helpers";
+import { isInternalRole } from "@/lib/roles";
 
 export type ActionResult = { ok: boolean; error?: string; message?: string };
 
@@ -15,14 +16,23 @@ export async function createPengguna(formData: FormData): Promise<ActionResult> 
     const nama = String(formData.get("nama") ?? "").trim();
     const email = String(formData.get("email") ?? "").trim().toLowerCase();
     const password = String(formData.get("password") ?? "");
-    const role = String(formData.get("role") ?? "OPD");
-    const opdId = String(formData.get("opdId") ?? "") || null;
+    const roleInput = String(formData.get("role") ?? "OPD");
+    const opdInput = String(formData.get("opdId") ?? "") || null;
 
-    if (!nama || !email || password.length < 6) {
-      return { ok: false, error: "Nama, email valid, dan kata sandi minimal 6 karakter wajib diisi." };
+    if (!nama || !/^\S+@\S+\.\S+$/.test(email) || password.length < 8) {
+      return { ok: false, error: "Nama, email valid, dan kata sandi minimal 8 karakter wajib diisi." };
     }
+    if (!isInternalRole(roleInput)) {
+      return { ok: false, error: "Role tidak valid. Pilih Admin Sistem, Bapperida, atau OPD." };
+    }
+    const role = roleInput;
+    const opdId = role === "OPD" ? opdInput : null;
     if (role === "OPD" && !opdId) {
       return { ok: false, error: "Pengguna OPD wajib dikaitkan dengan OPD." };
+    }
+    if (opdId) {
+      const opd = await db.opd.findFirst({ where: { id: opdId, status: "AKTIF" } });
+      if (!opd) return { ok: false, error: "OPD tidak ditemukan atau sedang nonaktif." };
     }
     const exists = await db.user.findUnique({ where: { email } });
     if (exists) return { ok: false, error: "Email sudah digunakan." };
@@ -72,7 +82,7 @@ export async function resetPasswordPengguna(formData: FormData): Promise<ActionR
     const actor = await requireInternal(["ADMIN"]);
     const userId = String(formData.get("userId") ?? "");
     const password = String(formData.get("password") ?? "");
-    if (password.length < 6) return { ok: false, error: "Kata sandi minimal 6 karakter." };
+    if (password.length < 8) return { ok: false, error: "Kata sandi minimal 8 karakter." };
 
     const user = await db.user.findUnique({ where: { id: userId } });
     if (!user) return { ok: false, error: "Pengguna tidak ditemukan." };

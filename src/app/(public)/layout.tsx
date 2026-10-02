@@ -11,11 +11,11 @@ export default async function PublicLayout({
   const s = (key: string, fallback = "") => settings.find((x) => x.key === key)?.value ?? fallback;
 
   return (
-    <div className="flex min-h-screen flex-col bg-slate-50">
+    <div className="flex min-h-screen flex-col bg-[#f5f7f4]">
       <PublicNavbar siteTitle={s("site_title", "Bapperida Kabupaten Pinrang")} />
       <main className="flex-1">{children}</main>
       <PublicFooter
-        address={s("contact_address", "Pangkajene, Pinrang")}
+        address={s("contact_address", "Jalan Bintang No. 1, Macorawalie, Kecamatan Watang Sawitto, Kabupaten Pinrang, Sulawesi Selatan 91212")}
         email={s("contact_email", "bapperida@pinrang.go.id")}
         phone={s("contact_phone", "(0421) 91251")}
       />

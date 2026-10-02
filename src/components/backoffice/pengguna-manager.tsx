@@ -72,7 +72,7 @@ function UserTable({ items, currentUserId }: { items: UserItem[]; currentUserId:
                     >
                       <div className="space-y-1.5">
                         <Label>Kata Sandi Baru</Label>
-                        <Input name="password" type="password" required minLength={6} placeholder="Minimal 6 karakter" />
+                        <Input name="password" type="password" required minLength={8} placeholder="Minimal 8 karakter" />
                       </div>
                       <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700" disabled={loading}>
                         {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -165,7 +165,7 @@ export function PenggunaManager({
                   </div>
                   <div className="space-y-1.5">
                     <Label>Kata Sandi</Label>
-                    <Input name="password" type="password" required minLength={6} placeholder="Minimal 6 karakter" />
+                    <Input name="password" type="password" required minLength={8} placeholder="Minimal 8 karakter" />
                   </div>
                   <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700" disabled={loading}>
                     {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

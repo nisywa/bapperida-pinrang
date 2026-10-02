@@ -27,7 +27,7 @@ export default async function OpdKontenPage() {
           <Newspaper className="h-6 w-6 text-emerald-600" /> Konten OPD
         </h1>
         <p className="mt-1 text-sm text-slate-600">
-          Kelola artikel berita dan publikasi milik {session.opdNama}. Konten berstatus Published tampil
+          Penambahan artikel hanya dilakukan oleh Bapperida. Kelola publikasi dan artikel yang sudah ada milik {session.opdNama}. Konten berstatus Published tampil
           pada halaman publik OPD.
         </p>
       </div>
@@ -36,12 +36,14 @@ export default async function OpdKontenPage() {
         <CardContent className="p-6">
           <KontenManager
             canCreate
+            canCreateArticles={false}
             artikelList={artikels.map((a) => ({
               id: a.id,
               judul: a.judul,
               ringkasan: a.ringkasan,
               isi: a.isi,
               emoji: a.thumbnailEmoji,
+              thumbnailUrl: a.thumbnailUrl,
               status: a.status,
               publishedAt: a.publishedAt?.toISOString() ?? null,
               pemilik: session.opdNama ?? "OPD",

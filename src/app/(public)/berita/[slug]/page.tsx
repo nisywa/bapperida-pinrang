@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Building2 } from "lucide-react";
 import { formatTanggal } from "@/lib/constants";
+import { ArticleIcon } from "@/components/public/article-icon";
 
 export const revalidate = 60;
 
@@ -35,17 +36,17 @@ export default async function ArtikelDetailPage({
       </Button>
 
       <article className="overflow-hidden rounded-2xl border bg-white shadow-sm">
-        <header className="bg-gradient-to-br from-emerald-800 to-teal-800 px-8 py-10 text-white">
-          <span className="text-5xl">{artikel.thumbnailEmoji}</span>
+        <header className="bg-[#d3e7d8] px-8 py-10 text-[#24483a]">
+          <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/65 text-[#56816c] ring-1 ring-white"><ArticleIcon title={artikel.judul} photoUrl={artikel.thumbnailUrl} className="h-8 w-8" /></span>
           <div className="mt-4 flex flex-wrap items-center gap-2 text-xs">
-            <Badge className="bg-white/15 text-white border-white/20 backdrop-blur">
+            <Badge className="border-white/80 bg-white/55 text-[#416856] backdrop-blur">
               <Building2 className="mr-1 h-3 w-3" />
               {artikel.opd ? artikel.opd.nama : "Bapperida Kabupaten Pinrang"}
             </Badge>
-            <span className="text-emerald-200">{formatTanggal(artikel.publishedAt)}</span>
+            <span className="text-[#668676]">{formatTanggal(artikel.publishedAt)}</span>
           </div>
           <h1 className="mt-3 text-2xl font-bold leading-tight md:text-3xl">{artikel.judul}</h1>
-          <p className="mt-3 text-sm leading-relaxed text-emerald-100/90">{artikel.ringkasan}</p>
+          <p className="mt-3 text-sm leading-relaxed text-[#527062]">{artikel.ringkasan}</p>
         </header>
 
         <div className="px-8 py-8">
@@ -80,7 +81,7 @@ export default async function ArtikelDetailPage({
             {terkait.map((t) => (
               <Link key={t.id} href={`/berita/${t.slug}`} className="group">
                 <div className="h-full rounded-xl border bg-white p-4 shadow-sm transition-all group-hover:border-emerald-200 group-hover:shadow-md">
-                  <span className="text-2xl">{t.thumbnailEmoji}</span>
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e6f0e9] text-[#56816c]"><ArticleIcon title={t.judul} photoUrl={t.thumbnailUrl} className="h-5 w-5" /></span>
                   <h3 className="mt-2 line-clamp-2 text-sm font-semibold leading-snug text-slate-900 group-hover:text-emerald-700">
                     {t.judul}
                   </h3>

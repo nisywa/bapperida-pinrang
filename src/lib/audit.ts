@@ -14,13 +14,14 @@ export async function logActivity(opts: {
   detail?: string;
   ipAddress?: string;
   userAgent?: string;
+  publicActor?: boolean;
 }) {
   try {
     await db.activityLog.create({
       data: {
         actorUserId: opts.actor?.id ?? null,
-        actorNama: opts.actor?.nama ?? "Anonim",
-        actingRole: opts.actor?.role ?? null,
+        actorNama: opts.actor?.nama ?? (opts.publicActor ? "Masyarakat" : "Anonim"),
+        actingRole: opts.actor?.role ?? (opts.publicActor ? "MASYARAKAT" : null),
         opdScopeNama: opts.actor?.opdNama ?? null,
         action: opts.action,
         entityType: opts.entityType,

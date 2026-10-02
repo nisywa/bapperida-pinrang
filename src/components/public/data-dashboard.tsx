@@ -10,13 +10,23 @@ import { ChoroplethMap } from "@/components/public/choropleth-map";
 import { RankingBar } from "@/components/public/ranking-bar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatNumber } from "@/lib/constants";
-import { Database, TrendingUp, Award, Users, Info } from "lucide-react";
+import { Database, TrendingUp, Award, Users, Info, Download } from "lucide-react";
 
 /**
  * Section dashboard publik yang dipakai di portal utama (/data)
  * dan halaman OPD (/opd/[slug]/data) — scope OPD via dataset detail.
  */
-export async function DataDashboardSection({ opdId }: { opdId?: string }) {
+export async function DataDashboardSection({
+  opdId,
+  datasetId,
+  metricKey,
+  basePath = "/data",
+}: {
+  opdId?: string;
+  datasetId?: string;
+  metricKey?: string;
+  basePath?: string;
+}) {
   const datasets = await getPublishedDatasets(opdId);
 
   if (datasets.length === 0) {
@@ -31,9 +41,9 @@ export async function DataDashboardSection({ opdId }: { opdId?: string }) {
     );
   }
 
-  const activeDataset = datasets[0];
+  const activeDataset = datasets.find((dataset) => dataset.id === datasetId) ?? datasets[0];
   const metrics = await getDatasetMetrics(activeDataset.id);
-  const activeMetric = metrics[0];
+  const activeMetric = metrics.find((metric) => metric.kode === metricKey) ?? metrics[0];
   const polygons = activeMetric ? await getDatasetPolygons(activeDataset.id, activeMetric.kode, opdId) : [];
   const kpis = computeKpis(polygons);
   const ranking = polygons
@@ -45,15 +55,26 @@ export async function DataDashboardSection({ opdId }: { opdId?: string }) {
       {/* Pemilih indikator */}
       <div className="flex flex-wrap gap-2">
         {datasets.map((d) => (
-          <span
+          <Link
             key={d.id}
-            className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-800"
+            href={`${basePath}?dataset=${encodeURIComponent(d.id)}`}
+            className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium ${
+              d.id === activeDataset.id
+                ? "border-emerald-600 bg-emerald-600 text-white"
+                : "border-emerald-200 bg-emerald-50 text-emerald-800 hover:bg-emerald-100"
+            }`}
           >
             <Database className="h-3.5 w-3.5" />
             {d.indikatorNama}
-            <span className="text-xs text-emerald-600">· {d.periodeNama}</span>
-          </span>
+            <span className={d.id === activeDataset.id ? "text-xs text-emerald-100" : "text-xs text-emerald-600"}>· {d.periodeNama}</span>
+          </Link>
         ))}
+        <a
+          href={`/api/public/dataset/${activeDataset.id}/export`}
+          className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:border-emerald-300 hover:text-emerald-700"
+        >
+          <Download className="h-3.5 w-3.5" /> Unduh CSV
+        </a>
       </div>
 
       {/* Pemilih metric */}
@@ -63,22 +84,23 @@ export async function DataDashboardSection({ opdId }: { opdId?: string }) {
             Indikator/Metric Tersedia
           </p>
           <div className="flex flex-wrap gap-2">
-            {metrics.map((m, i) => (
-              <span
+            {metrics.map((m) => (
+              <Link
                 key={m.kode}
+                href={`${basePath}?dataset=${encodeURIComponent(activeDataset.id)}&metric=${encodeURIComponent(m.kode)}`}
                 className={`rounded-lg px-3 py-1.5 text-xs font-medium ${
-                  i === 0
+                  m.kode === activeMetric?.kode
                     ? "bg-emerald-600 text-white"
-                    : "bg-slate-100 text-slate-600"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                 }`}
               >
                 {m.nama}
-              </span>
+              </Link>
             ))}
           </div>
           <p className="mt-2.5 flex items-start gap-1.5 text-xs text-slate-500">
             <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-            Pemilihan metric interaktif tersedia pada dashboard analitik backoffice. Saat ini menampilkan metric utama dataset.
+            Pilih metric untuk memperbarui KPI, peta, dan peringkat wilayah.
           </p>
         </div>
       )}

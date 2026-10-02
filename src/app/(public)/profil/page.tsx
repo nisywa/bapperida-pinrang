@@ -136,7 +136,7 @@ export default async function ProfilPage() {
 
       <div className="mt-8 flex items-center gap-2 rounded-xl border border-emerald-100 bg-emerald-50/60 p-4 text-sm text-emerald-800">
         <MapPinned className="h-4 w-4 shrink-0" />
-        Alamat: {s("contact_address", "Pangkajene, Kabupaten Pinrang, Sulawesi Selatan")}
+        Alamat: {s("contact_address", "Jalan Bintang No. 1, Macorawalie, Kecamatan Watang Sawitto, Kabupaten Pinrang, Sulawesi Selatan 91212")}
       </div>
     </div>
   );

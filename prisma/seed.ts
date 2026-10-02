@@ -28,6 +28,7 @@ async function main() {
 
   // Hapus semua data (urutan menghormati FK)
   await db.activityLog.deleteMany();
+  await db.uploadedFile.deleteMany();
   await db.siteSetting.deleteMany();
   await db.datasetPublikDetail.deleteMany();
   await db.datasetPublik.deleteMany();
@@ -67,7 +68,7 @@ async function main() {
       "hero_subtitle",
       "Platform terpadu pengelolaan data lintas OPD Kabupaten Pinrang — pengumpulan indikator, verifikasi, visualisasi wilayah, dan publikasi informasi untuk masyarakat.",
     ],
-    ["contact_address", "Jl. Jend. Sudirman No. 1, Pangkajene, Kabupaten Pinrang, Sulawesi Selatan 91251"],
+    ["contact_address", "Jalan Bintang No. 1, Macorawalie, Kecamatan Watang Sawitto, Kabupaten Pinrang, Sulawesi Selatan 91212"],
     ["contact_email", "bapperida@pinrang.go.id"],
     ["contact_phone", "(0421) 91251"],
     ["vision", "Terwujudnya Kabupaten Pinrang yang maju, mandiri, dan berdaya saing melalui perencanaan pembangunan berbasis data."],
@@ -167,7 +168,7 @@ async function main() {
   }
 
   const kecamatanDefs: Array<{ kode: string; nama: string; r: number; c: number; base: number }> = [
-    { kode: "7307010", nama: "Watang Pulu", r: 0, c: 1, base: 0.62 },
+    { kode: "7307010", nama: "Watang Sawitto", r: 0, c: 1, base: 0.62 },
     { kode: "7307020", nama: "Suppa", r: 0, c: 0, base: 0.55 },
     { kode: "7307030", nama: "Duampanua", r: 0, c: 2, base: 0.70 },
     { kode: "7307040", nama: "Tiroang", r: 1, c: 3, base: 0.48 },
@@ -176,9 +177,9 @@ async function main() {
     { kode: "7307070", nama: "Mattiro Sompe", r: 1, c: 0, base: 0.58 },
     { kode: "7307080", nama: "Lanrisang", r: 2, c: 3, base: 0.52 },
     { kode: "7307090", nama: "Cempa", r: 2, c: 2, base: 0.60 },
-    { kode: "7307100", nama: "Maritengngae", r: 2, c: 1, base: 0.78 },
+    { kode: "7307100", nama: "Lembang", r: 2, c: 1, base: 0.78 },
     { kode: "7307110", nama: "Mattiro Bulu", r: 2, c: 0, base: 0.44 },
-    { kode: "7307120", nama: "Batu Lapide", r: 3, c: 1, base: 0.50 },
+    { kode: "7307120", nama: "Batu Lappa", r: 3, c: 1, base: 0.50 },
   ];
 
   const wilayahMap: Record<string, string> = {}; // nama -> id
@@ -211,7 +212,25 @@ async function main() {
   }
 
   // ============ 5. INDIKATOR ============
-  const indikatorDefs = [
+  type SeedQuestion = {
+    kode: string;
+    pertanyaan: string;
+    tipe: string;
+    satuan?: string;
+    dimensiWilayah: boolean;
+    help?: string;
+    opsi?: string[];
+  };
+  type SeedIndicator = {
+    kode: string;
+    nama: string;
+    deskripsi: string;
+    satuan: string;
+    warna: string;
+    aspek: Array<{ nama: string; pertanyaan: SeedQuestion[] }>;
+  };
+
+  const indikatorDefs: SeedIndicator[] = [
     {
       kode: "IND-01",
       nama: "Kesehatan Masyarakat",
@@ -498,7 +517,7 @@ async function main() {
     }
     if (a.targetStatus === "PERLU_PERBAIKAN") {
       await db.verifikasi.create({
-        data: { jawabanId: jawaban.id, verifierId: bapperidaUser.id, status: "PERLU_PERBAIKAN", catatan: "Nilai bantuan sosial untuk Kecamatan Batu Lapide dan Mattiro Bulu tampak tidak konsisten dengan periode sebelumnya. Mohon dicek ulang.", verifiedAt: new Date("2026-08-02") },
+        data: { jawabanId: jawaban.id, verifierId: bapperidaUser.id, status: "PERLU_PERBAIKAN", catatan: "Nilai bantuan sosial untuk Kecamatan Batu Lappa dan Mattiro Bulu tampak tidak konsisten dengan periode sebelumnya. Mohon dicek ulang.", verifiedAt: new Date("2026-08-02") },
       });
       await db.riwayatStatusJawaban.create({
         data: { jawabanId: jawaban.id, statusFrom: "DIKIRIM", statusTo: "PERLU_PERBAIKAN", changedBy: bapperidaUser.id, reason: "Perlu verifikasi ulang nilai tertentu", changedAt: new Date("2026-08-02") },

@@ -1,0 +1,1 @@
+ALTER TABLE "Artikel" ADD COLUMN IF NOT EXISTS "thumbnailUrl" TEXT;

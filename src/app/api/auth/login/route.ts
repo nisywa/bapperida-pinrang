@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { authenticate, createSession } from "@/lib/auth";
 import { logActivity } from "@/lib/audit";
+import { checkLoginRateLimit, clearLoginFailures, recordLoginFailure } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,13 +11,27 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Email dan kata sandi wajib diisi." }, { status: 400 });
     }
 
-    const user = await authenticate(email, password);
+    const normalizedEmail = String(email).toLowerCase().trim();
+    const clientAddress = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || req.headers.get("x-real-ip") || "local";
+    const limitKey = `${clientAddress}:${normalizedEmail}`;
+    const rateLimit = checkLoginRateLimit(limitKey);
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { error: "Terlalu banyak percobaan login. Silakan coba kembali beberapa menit lagi." },
+        { status: 429, headers: { "Retry-After": String(rateLimit.retryAfterSeconds) } }
+      );
+    }
+
+    const user = await authenticate(normalizedEmail, password);
     if (!user) {
+      recordLoginFailure(limitKey);
       return NextResponse.json(
         { error: "Kredensial tidak valid atau akun tidak aktif." },
         { status: 401 }
       );
     }
+
+    clearLoginFailures(limitKey);
 
     await createSession(user);
     await logActivity({

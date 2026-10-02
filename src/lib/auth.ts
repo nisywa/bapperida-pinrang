@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import { cookies } from "next/headers";
 import { db } from "@/lib/db";
+import type { InternalRole } from "@/lib/roles";
 
 const SECRET = process.env.AUTH_SECRET || "bapperida-pinrang-secret-key-2026";
 const COOKIE_NAME = "bapperida_session";
@@ -10,7 +11,7 @@ export type SessionUser = {
   id: string;
   email: string;
   nama: string;
-  role: "ADMIN" | "BAPPERIDA" | "OPD";
+  role: InternalRole;
   opdId?: string | null;
   opdNama?: string | null;
   opdSlug?: string | null;
@@ -123,7 +124,7 @@ export function isInternal(role?: string | null): boolean {
   return role === "ADMIN" || role === "BAPPERIDA" || role === "OPD";
 }
 
-export async function requireRole(roles: Array<"ADMIN" | "BAPPERIDA" | "OPD">): Promise<SessionUser> {
+export async function requireRole(roles: InternalRole[]): Promise<SessionUser> {
   const session = await getSession();
   if (!session || !roles.includes(session.role)) {
     throw new Error("UNAUTHORIZED");

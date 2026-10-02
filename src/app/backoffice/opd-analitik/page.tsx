@@ -22,6 +22,9 @@ export default async function OpdAnalitikPage({
   if (session.role !== "OPD") {
     return <p className="text-sm text-slate-600">Menu ini khusus untuk pengguna OPD.</p>;
   }
+  if (!session.opdId) {
+    return <p className="text-sm text-rose-600">Akun OPD belum dikaitkan dengan master OPD.</p>;
+  }
   const { q } = await searchParams;
 
   // Hanya data milik OPD ini (scope server-side)

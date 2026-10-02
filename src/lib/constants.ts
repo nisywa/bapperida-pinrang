@@ -31,6 +31,7 @@ export const ROLE_LABEL: Record<string, string> = {
   ADMIN: "Administrator",
   BAPPERIDA: "Bapperida",
   OPD: "OPD",
+  MASYARAKAT: "Masyarakat (Portal Publik)",
 };
 
 export function formatTanggal(d: Date | string | null | undefined): string {

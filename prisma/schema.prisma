@@ -22,7 +22,7 @@ model User {
   nama        String
   email       String       @unique
   passwordHash String
-  role        String // ADMIN | BAPPERIDA | OPD
+  role        String // ADMIN | BAPPERIDA | OPD (MASYARAKAT menggunakan portal publik tanpa akun)
   status      String       @default("AKTIF") // AKTIF | NONAKTIF
   lastLoginAt DateTime?
   createdAt   DateTime     @default(now())
@@ -35,6 +35,7 @@ model User {
   perencanaPeriode PeriodePengisian[] @relation("PeriodeCreator")
   publikasis     Publikasi[]      @relation("PublikasiCreator")
   verifikasis    Verifikasi[]     @relation("VerifierLogs")
+  uploadedFiles  UploadedFile[]   @relation("UploadedBy")
 }
 
 // ---------- Master Data ----------
@@ -57,6 +58,7 @@ model Opd {
   publikasi   Publikasi[]
   notifikasi  Notifikasi[]
   datasetDetail DatasetPublikDetail[]
+  uploadedFiles UploadedFile[]
 }
 
 model OpdProfile {
@@ -242,6 +244,22 @@ model DetailJawaban {
   @@index([jawabanId, pertanyaanId])
 }
 
+model UploadedFile {
+  id           String   @id @default(cuid())
+  originalName String
+  storageName  String   @unique
+  mimeType     String
+  size         Int
+  uploadedById String
+  opdId        String
+  createdAt    DateTime @default(now())
+
+  uploadedBy User @relation("UploadedBy", fields: [uploadedById], references: [id])
+  opd        Opd  @relation(fields: [opdId], references: [id])
+
+  @@index([opdId, createdAt])
+}
+
 // ---------- Monitoring & Verification ----------
 
 model Verifikasi {
@@ -299,6 +317,7 @@ model Artikel {
   ringkasan         String
   isi               String
   thumbnailEmoji    String   @default("📰")
+  thumbnailUrl      String?
   status            String   @default("DRAFT") // DRAFT | PUBLISHED
   featured          Boolean  @default(false)
   showOnMainPortal  Boolean  @default(false)

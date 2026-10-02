@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight } from "lucide-react";
 import { formatTanggal } from "@/lib/constants";
+import { ArticleIcon } from "@/components/public/article-icon";
 
 export const revalidate = 60;
 
@@ -31,7 +32,7 @@ export default async function BeritaPage() {
             <Card className="h-full border shadow-sm transition-all group-hover:-translate-y-0.5 group-hover:border-emerald-200 group-hover:shadow-md">
               <CardContent className="flex h-full flex-col p-6">
                 <div className="flex items-center justify-between">
-                  <span className="text-4xl">{a.thumbnailEmoji}</span>
+                  <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#e6f0e9] text-[#56816c] ring-1 ring-[#d4e4d8]"><ArticleIcon title={a.judul} photoUrl={a.thumbnailUrl} className="h-6 w-6" /></span>
                   <Badge variant="secondary" className="text-xs">
                     {a.opd ? a.opd.singkatan : "Bapperida"}
                   </Badge>

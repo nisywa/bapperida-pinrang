@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Save, Send, MapPin } from "lucide-react";
+import { Loader2, Save, Send, MapPin, FileUp, FileText, X } from "lucide-react";
 
 type Q = {
   id: string;
@@ -256,6 +256,29 @@ function SingleInput({
   disabled: boolean;
 }) {
   const key = `${q.id}:-`;
+  const [uploading, setUploading] = useState(false);
+
+  async function uploadFile(file?: File) {
+    if (!file) return;
+    setUploading(true);
+    const body = new FormData();
+    body.append("file", file);
+    try {
+      const response = await fetch("/api/backoffice/uploads", { method: "POST", body });
+      const result = (await response.json()) as { id?: string; name?: string; error?: string };
+      if (!response.ok || !result.id) {
+        toast.error(result.error ?? "Gagal mengunggah dokumen.");
+        return;
+      }
+      setValue(key, { text: result.id });
+      toast.success(`${result.name ?? "Dokumen"} berhasil diunggah. Simpan draft untuk menautkannya ke jawaban.`);
+    } catch {
+      toast.error("Gagal mengunggah dokumen.");
+    } finally {
+      setUploading(false);
+    }
+  }
+
   if (q.tipe === "NUMBER") {
     return (
       <Input
@@ -324,6 +347,41 @@ function SingleInput({
         disabled={disabled}
         onChange={(e) => setValue(key, { date: e.target.value })}
       />
+    );
+  }
+  if (q.tipe === "FILE") {
+    return (
+      <div className="space-y-2">
+        {value?.text && (
+          <div className="flex max-w-xl items-center justify-between gap-3 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm">
+            <a
+              href={`/api/backoffice/uploads/${encodeURIComponent(value.text)}`}
+              className="inline-flex items-center gap-2 font-medium text-emerald-700 hover:underline"
+            >
+              <FileText className="h-4 w-4" /> Dokumen pendukung tersimpan
+            </a>
+            {!disabled && (
+              <button type="button" onClick={() => setValue(key, { text: "" })} className="text-slate-400 hover:text-rose-600" title="Lepaskan dokumen">
+                <X className="h-4 w-4" />
+              </button>
+            )}
+          </div>
+        )}
+        {!disabled && (
+          <label className={`inline-flex cursor-pointer items-center rounded-lg border px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 ${uploading ? "pointer-events-none opacity-60" : ""}`}>
+            {uploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <FileUp className="mr-2 h-4 w-4" />}
+            {value?.text ? "Ganti dokumen" : "Unggah dokumen"}
+            <input
+              type="file"
+              className="sr-only"
+              accept=".pdf,.docx,.xls,.xlsx,.csv,.png,.jpg,.jpeg"
+              disabled={uploading}
+              onChange={(event) => uploadFile(event.target.files?.[0])}
+            />
+          </label>
+        )}
+        <p className="text-xs text-slate-500">PDF, DOCX, XLS/XLSX, CSV, PNG, atau JPG. Maksimal 10 MB.</p>
+      </div>
     );
   }
   return <Input disabled placeholder="Tipe tidak didukung" />;

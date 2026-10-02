@@ -25,7 +25,7 @@ export default async function KontenPage() {
           <Newspaper className="h-6 w-6 text-emerald-600" /> Konten Portal
         </h1>
         <p className="mt-1 text-sm text-slate-600">
-          Kelola artikel dan publikasi portal utama Bapperida, serta moderasi konten OPD (tarik/terbitkan).
+          Kelola artikel dan publikasi portal utama. Artikel baru hanya dapat ditambahkan Bapperida. Klik Terbitkan agar informasi dapat dilihat masyarakat.
         </p>
       </div>
 
@@ -33,12 +33,14 @@ export default async function KontenPage() {
         <CardContent className="p-6">
           <KontenManager
             canCreate
+            canCreateArticles={session.role === "BAPPERIDA"}
             artikelList={artikels.map((a) => ({
               id: a.id,
               judul: a.judul,
               ringkasan: a.ringkasan,
               isi: a.isi,
               emoji: a.thumbnailEmoji,
+              thumbnailUrl: a.thumbnailUrl,
               status: a.status,
               publishedAt: a.publishedAt?.toISOString() ?? null,
               pemilik: a.opd?.nama ?? "Bapperida",

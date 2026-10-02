@@ -7,7 +7,14 @@ export const revalidate = 60;
 
 export const metadata = { title: "Data & Statistik" };
 
-export default async function DataPublikPage() {
+type SearchParams = Promise<{ dataset?: string | string[]; metric?: string | string[] }>;
+
+function param(value: string | string[] | undefined) {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+export default async function DataPublikPage({ searchParams }: { searchParams: SearchParams }) {
+  const query = await searchParams;
   const datasets = await db.datasetPublik.findMany({
     where: { status: "PUBLISHED" },
     orderBy: { publishedAt: "desc" },
@@ -31,7 +38,7 @@ export default async function DataPublikPage() {
         )}
       </header>
 
-      <DataDashboardSection />
+      <DataDashboardSection datasetId={param(query.dataset)} metricKey={param(query.metric)} />
     </div>
   );
 }

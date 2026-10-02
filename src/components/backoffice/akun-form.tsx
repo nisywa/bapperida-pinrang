@@ -78,7 +78,7 @@ export function AkunForm({
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="password">Kata Sandi Baru (opsional)</Label>
-              <Input id="password" name="password" type="password" placeholder="Minimal 6 karakter — kosongkan bila tidak diubah" />
+              <Input id="password" name="password" type="password" minLength={8} placeholder="Minimal 8 karakter — kosongkan bila tidak diubah" />
             </div>
             <Button type="submit" className="bg-emerald-600 hover:bg-emerald-700" disabled={loading}>
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

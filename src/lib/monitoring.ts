@@ -18,6 +18,21 @@ export type MonitoringRow = {
   periodeNama: string;
 };
 
+export type MonitoringFilters = {
+  opdId?: string;
+  indikatorKode?: string;
+  status?: string;
+};
+
+export function filterMonitoringRows(rows: MonitoringRow[], filters: MonitoringFilters) {
+  return rows.filter((row) => {
+    if (filters.opdId && row.opdId !== filters.opdId) return false;
+    if (filters.indikatorKode && row.indikatorKode !== filters.indikatorKode) return false;
+    if (filters.status && row.status !== filters.status) return false;
+    return true;
+  });
+}
+
 /** Semua penugasan pada periode aktif + status jawaban + progres */
 export async function getMonitoringRows(periodeId?: string): Promise<MonitoringRow[]> {
   const periode =

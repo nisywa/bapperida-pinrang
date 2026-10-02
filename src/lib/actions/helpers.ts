@@ -3,6 +3,21 @@
 import { db } from "@/lib/db";
 import { getSession, hashPassword, type SessionUser } from "@/lib/auth";
 import { logActivity } from "@/lib/audit";
+import type { InternalRole } from "@/lib/roles";
+
+function hasDetailValue(detail: {
+  valueText: string | null;
+  valueNumber: number | null;
+  valueDate: Date | null;
+  valueBoolean: boolean | null;
+}) {
+  return (
+    (detail.valueText !== null && detail.valueText.trim() !== "") ||
+    detail.valueNumber !== null ||
+    detail.valueDate !== null ||
+    detail.valueBoolean !== null
+  );
+}
 
 /** Hitung ulang cache progres pengisian (bukan sumber kebenaran) */
 export async function recomputeProgres(penugasanId: string) {
@@ -24,7 +39,7 @@ export async function recomputeProgres(penugasanId: string) {
     orderBy: { version: "desc" },
     include: { detail: true },
   });
-  const filled = jawaban ? jawaban.detail.length : 0;
+  const filled = jawaban ? jawaban.detail.filter(hasDetailValue).length : 0;
   const percent = required > 0 ? Math.min(100, Math.round((filled / required) * 1000) / 10) : 0;
 
   await db.progresPengisian.upsert({
@@ -47,7 +62,7 @@ export async function recomputeProgres(penugasanId: string) {
   });
 }
 
-export async function requireInternal(roles: Array<"ADMIN" | "BAPPERIDA" | "OPD">): Promise<SessionUser> {
+export async function requireInternal(roles: InternalRole[]): Promise<SessionUser> {
   const session = await getSession();
   if (!session || !roles.includes(session.role)) {
     throw new Error("UNAUTHORIZED");

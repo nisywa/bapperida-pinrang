@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, FileDown, Newspaper } from "lucide-react";
+import { OpdIcon } from "@/components/public/opd-icon";
 
 export const revalidate = 60;
 
@@ -38,9 +39,7 @@ export default async function DirektoriOpdPage() {
             <Card key={opd.id} className="group border shadow-sm transition-all hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md">
               <CardContent className="flex h-full flex-col p-6">
                 <div className="flex items-start gap-4">
-                  <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-3xl">
-                    {opd.profil?.logoEmoji ?? "🏛️"}
-                  </span>
+                  <OpdIcon name={opd.nama} />
                   <div className="min-w-0">
                     <h2 className="font-semibold leading-snug text-slate-900 group-hover:text-emerald-700">
                       {opd.nama}

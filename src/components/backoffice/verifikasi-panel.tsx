@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { CheckCircle2, RotateCcw, Loader2, MapPin, MessageSquareWarning } from "lucide-react";
+import { CheckCircle2, RotateCcw, Loader2, MapPin, MessageSquareWarning, FileDown } from "lucide-react";
 import { JAWABAN_STATUS } from "@/lib/constants";
 
 type DetailItem = { wilayahNama: string | null; nilai: string };
@@ -128,6 +128,13 @@ export function VerifikasiPanel({
                       </tbody>
                     </table>
                   </div>
+                ) : q.tipe === "FILE" && q.jawaban[0]?.nilai ? (
+                  <a
+                    href={`/api/backoffice/uploads/${encodeURIComponent(q.jawaban[0].nilai)}`}
+                    className="mt-3 inline-flex items-center gap-2 rounded-lg border border-emerald-200 bg-white px-3 py-2 text-sm font-medium text-emerald-700 hover:bg-emerald-50"
+                  >
+                    <FileDown className="h-4 w-4" /> Unduh dokumen pendukung
+                  </a>
                 ) : (
                   <p className="mt-2 text-lg font-bold text-emerald-700">
                     {q.jawaban[0]?.nilai ?? "-"}

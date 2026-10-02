@@ -19,12 +19,14 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
 import { Loader2, PlusCircle, Send, Trash2, Pencil, FileDown } from "lucide-react";
+import { ArticlePhotoInput } from "@/components/backoffice/article-photo-input";
+import { ArticleIcon } from "@/components/public/article-icon";
 import { formatTanggal } from "@/lib/constants";
 
 type ArtikelItem = {
   id: string; judul: string; ringkasan: string; isi: string; emoji: string;
   status: string; publishedAt: string | null; pemilik: string; opdId: string | null;
-  showOnMainPortal: boolean;
+  showOnMainPortal: boolean; thumbnailUrl: string | null;
 };
 type PublikasiItem = {
   id: string; judul: string; deskripsi: string; jenisFile: string; tahun: number | null;
@@ -35,10 +37,12 @@ export function KontenManager({
   artikelList,
   publikasiList,
   canCreate,
+  canCreateArticles,
 }: {
   artikelList: ArtikelItem[];
   publikasiList: PublikasiItem[];
   canCreate: boolean;
+  canCreateArticles: boolean;
 }) {
   const router = useRouter();
   const { run, runForm, loading } = useAction();
@@ -53,7 +57,7 @@ export function KontenManager({
 
       {/* ============ ARTIKEL ============ */}
       <TabsContent value="artikel" className="mt-4 space-y-4">
-        {canCreate && (
+        {canCreateArticles && (
           <Dialog>
             <DialogTrigger asChild>
               <Button className="bg-emerald-600 hover:bg-emerald-700">
@@ -73,11 +77,7 @@ export function KontenManager({
                   if (res.ok) (e.target as HTMLFormElement).reset();
                 }}
               >
-                <div className="grid grid-cols-[80px_1fr] gap-3">
-                  <div className="space-y-1.5">
-                    <Label htmlFor="emoji">Emoji</Label>
-                    <Input id="emoji" name="emoji" defaultValue="📰" maxLength={4} className="text-center text-xl" />
-                  </div>
+                <div>
                   <div className="space-y-1.5">
                     <Label htmlFor="judul">Judul</Label>
                     <Input id="judul" name="judul" required placeholder="Judul artikel" />
@@ -87,6 +87,7 @@ export function KontenManager({
                   <Label htmlFor="ringkasan">Ringkasan</Label>
                   <Textarea id="ringkasan" name="ringkasan" rows={2} required placeholder="Ringkasan singkat (tampil pada daftar)" />
                 </div>
+                <ArticlePhotoInput id="photo" />
                 <div className="space-y-1.5">
                   <Label htmlFor="isi">Isi Artikel</Label>
                   <Textarea id="isi" name="isi" rows={8} required placeholder="Isi lengkap artikel. Pisahkan paragraf dengan baris kosong." />
@@ -105,7 +106,7 @@ export function KontenManager({
             <div key={a.id} className="rounded-xl border p-4">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="flex min-w-0 gap-3">
-                  <span className="text-3xl">{a.emoji}</span>
+                  <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700"><ArticleIcon title={a.judul} photoUrl={a.thumbnailUrl} /></span>
                   <div className="min-w-0">
                     <p className="font-semibold text-slate-900">{a.judul}</p>
                     <p className="mt-0.5 line-clamp-1 text-sm text-slate-600">{a.ringkasan}</p>
@@ -167,11 +168,7 @@ export function KontenManager({
                 }}
               >
                 <input type="hidden" name="id" value={editArtikel.id} />
-                <div className="grid grid-cols-[80px_1fr] gap-3">
-                  <div className="space-y-1.5">
-                    <Label htmlFor="e-emoji">Emoji</Label>
-                    <Input id="e-emoji" name="emoji" defaultValue={editArtikel.emoji} maxLength={4} className="text-center text-xl" />
-                  </div>
+                <div>
                   <div className="space-y-1.5">
                     <Label htmlFor="e-judul">Judul</Label>
                     <Input id="e-judul" name="judul" defaultValue={editArtikel.judul} required />
@@ -181,6 +178,7 @@ export function KontenManager({
                   <Label htmlFor="e-ringkasan">Ringkasan</Label>
                   <Textarea id="e-ringkasan" name="ringkasan" rows={2} defaultValue={editArtikel.ringkasan} required />
                 </div>
+                <ArticlePhotoInput id="e-photo" initialUrl={editArtikel.thumbnailUrl} />
                 <div className="space-y-1.5">
                   <Label htmlFor="e-isi">Isi</Label>
                   <Textarea id="e-isi" name="isi" rows={8} defaultValue={editArtikel.isi} required />

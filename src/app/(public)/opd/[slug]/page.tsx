@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, FileDown, Newspaper, Eye, Target, ListChecks } from "lucide-react";
+import { ArticleIcon } from "@/components/public/article-icon";
 
 export const revalidate = 60;
 
@@ -125,7 +126,7 @@ export default async function OpdBerandaPage({
               <Link key={a.id} href={`/berita/${a.slug}`} className="group">
                 <Card className="h-full border shadow-sm transition-all group-hover:border-emerald-200 group-hover:shadow-md">
                   <CardContent className="p-5">
-                    <span className="text-3xl">{a.thumbnailEmoji}</span>
+                    <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#e6f0e9] text-[#56816c]"><ArticleIcon title={a.judul} photoUrl={a.thumbnailUrl} className="h-5 w-5" /></span>
                     <p className="mt-3 text-xs text-slate-500">
                       {a.publishedAt?.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
                     </p>

@@ -1,5 +1,7 @@
 import { db } from "@/lib/db";
-import type { MapPolygon } from "@/components/public/choropleth-map";
+import type { MapPolygon as ChoroplethMapPolygon } from "@/components/public/choropleth-map";
+
+export type MapPolygon = ChoroplethMapPolygon;
 
 export type PublishedDataset = {
   id: string;
