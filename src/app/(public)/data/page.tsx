@@ -1,5 +1,5 @@
 import { DataDashboardSection } from "@/components/public/data-dashboard";
-import { db } from "@/lib/db";
+import { publicDb as db } from "@/lib/public-db";
 import { ShieldCheck } from "lucide-react";
 import { formatTanggal } from "@/lib/constants";
 

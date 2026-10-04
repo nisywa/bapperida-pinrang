@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { db } from "@/lib/db";
+import { publicDb as db } from "@/lib/public-db";
 import {
   ArrowRight, BarChart3, Building2, FileDown, MapPinned,
   Newspaper, ShieldCheck, Database, Users, TrendingUp, Sparkles, CheckCircle2,

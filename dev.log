@@ -185,3 +185,6 @@ prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."
  GET / 200 in 1989ms (next.js: 31ms, application-code: 1958ms)
  GET / 200 in 5.3s (next.js: 2.6s, application-code: 2.7s)
  GET / 200 in 2.0s (next.js: 51ms, application-code: 1991ms)
+✓ Compiled in 29.8s
+  Reload env: .env
+✓ Compiled in 5.3s

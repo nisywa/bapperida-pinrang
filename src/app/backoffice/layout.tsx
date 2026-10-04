@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { BackofficeSidebar } from "@/components/backoffice/sidebar";
 import { LogoutButton } from "@/components/backoffice/logout-button";
 import { MENUS } from "@/lib/menus";
@@ -42,7 +43,7 @@ export default async function BackofficeLayout({
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <a href="/backoffice/notifikasi" aria-label="Notifikasi" className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition-colors hover:bg-[#edf3ee] hover:text-[#376653]"><Bell className="h-4 w-4" /></a>
+            <Link href="/backoffice/notifikasi" aria-label="Notifikasi" className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition-colors hover:bg-[#edf3ee] hover:text-[#376653]"><Bell className="h-4 w-4" /></Link>
             <LogoutButton />
           </div>
         </header>
@@ -51,14 +52,14 @@ export default async function BackofficeLayout({
         <nav className="sticky bottom-0 z-40 border-t border-slate-200/70 bg-white/90 p-2.5 backdrop-blur-xl lg:hidden" aria-label="Menu backoffice mobile">
           <div className="flex gap-2 overflow-x-auto">
             {mobileItems.map((item) => (
-              <a
+              <Link
                 key={item.href}
                 href={item.href}
                 className="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-[#edf2ee] px-3 py-2 text-xs font-semibold text-[#365e4e]"
               >
                 <item.icon className="h-3.5 w-3.5" />
                 {item.label}
-              </a>
+              </Link>
             ))}
           </div>
         </nav>

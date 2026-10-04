@@ -1,6 +1,7 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
+import { PUBLIC_DATA_TAG } from "@/lib/public-db";
 import { db } from "@/lib/db";
 import { logActivity } from "@/lib/audit";
 import { requireInternal, recomputeProgres } from "@/lib/actions/helpers";
@@ -259,6 +260,7 @@ export async function publishDataset(penugasanId: string, notes: string): Promis
       detail: `Mempublikasikan dataset ${penugasan.indikator.nama} v${dataset.version} (${details.length} nilai wilayah)`,
     });
     revalidatePath("/backoffice/dataset");
+    updateTag(PUBLIC_DATA_TAG);
     revalidatePath("/data");
     return { ok: true, message: `Dataset ${penugasan.indikator.nama} v${dataset.version} berhasil dipublikasikan ke portal publik.` };
   } catch {
@@ -280,6 +282,7 @@ export async function unpublishDataset(datasetId: string): Promise<ActionResult>
       detail: `Menarik dataset ${dataset.indikator.nama} v${dataset.version} dari portal publik`,
     });
     revalidatePath("/backoffice/dataset");
+    updateTag(PUBLIC_DATA_TAG);
     revalidatePath("/data");
     return { ok: true, message: "Dataset ditarik dari portal publik." };
   } catch {

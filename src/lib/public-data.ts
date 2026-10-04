@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { publicDb as db } from "@/lib/public-db";
 import type { MapPolygon as ChoroplethMapPolygon } from "@/components/public/choropleth-map";
 
 export type MapPolygon = ChoroplethMapPolygon;
@@ -69,10 +69,12 @@ export async function getDatasetPolygons(
   metricKey: string,
   opdId?: string
 ): Promise<MapPolygon[]> {
-  const wilayah = await db.wilayah.findMany({ where: { isActive: true }, orderBy: { kodeBps: "asc" } });
-  const details = await db.datasetPublikDetail.findMany({
+  const [wilayah, details] = await Promise.all([
+    db.wilayah.findMany({ where: { isActive: true }, orderBy: { kodeBps: "asc" } }),
+    db.datasetPublikDetail.findMany({
     where: { datasetId, metricKey, ...(opdId ? { opdId } : {}) },
-  });
+    }),
+  ]);
   const valueMap = new Map(details.map((d) => [d.wilayahId, d.metricValue]));
   return wilayah.map((w) => ({
     id: w.id,

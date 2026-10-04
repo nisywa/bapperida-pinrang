@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { db } from "@/lib/db";
+import { publicDb as db } from "@/lib/public-db";
 import { DataDashboardSection } from "@/components/public/data-dashboard";
 
 export const revalidate = 60;

@@ -1,6 +1,7 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
+import { PUBLIC_DATA_TAG } from "@/lib/public-db";
 import { db } from "@/lib/db";
 import { logActivity } from "@/lib/audit";
 import { requireInternal, hashPassword } from "@/lib/actions/helpers";
@@ -125,6 +126,7 @@ export async function createOpd(formData: FormData): Promise<ActionResult> {
     });
     await db.opdProfile.create({ data: { opdId: opd.id } });
     await logActivity({ actor, action: "CREATE", entityType: "Opd", entityId: opd.id, detail: `Mendaftarkan OPD ${nama}` });
+    updateTag(PUBLIC_DATA_TAG);
     revalidatePath("/backoffice/admin/master");
     return { ok: true, message: `OPD ${nama} berhasil didaftarkan.` };
   } catch {
@@ -141,6 +143,7 @@ export async function updateOpdStatus(opdId: string): Promise<ActionResult> {
     const newStatus = opd.status === "AKTIF" ? "NONAKTIF" : "AKTIF";
     await db.opd.update({ where: { id: opdId }, data: { status: newStatus } });
     await logActivity({ actor, action: "UPDATE", entityType: "Opd", entityId: opdId, detail: `Status OPD ${opd.nama} → ${newStatus}` });
+    updateTag(PUBLIC_DATA_TAG);
     revalidatePath("/backoffice/admin/master");
     return { ok: true, message: `Status OPD ${opd.nama} → ${newStatus}. Data historis tetap tersimpan.` };
   } catch {
@@ -168,6 +171,7 @@ export async function createIndikator(formData: FormData): Promise<ActionResult>
     });
     await db.konfigurasiVisualisasi.create({ data: { indikatorId: ind.id } });
     await logActivity({ actor, action: "CREATE", entityType: "Indikator", entityId: ind.id, detail: `Membuat indikator ${nama}` });
+    updateTag(PUBLIC_DATA_TAG);
     revalidatePath("/backoffice/admin/master");
     return { ok: true, message: `Indikator ${nama} berhasil dibuat.` };
   } catch {
@@ -188,6 +192,7 @@ export async function toggleIndikator(indikatorId: string): Promise<ActionResult
       entityId: indikatorId,
       detail: `${ind.isActive ? "Menonaktifkan" : "Mengaktifkan"} indikator ${ind.nama}`,
     });
+    updateTag(PUBLIC_DATA_TAG);
     revalidatePath("/backoffice/admin/master");
     return { ok: true, message: `Indikator ${ind.nama} ${ind.isActive ? "dinonaktifkan" : "diaktifkan"}.` };
   } catch {

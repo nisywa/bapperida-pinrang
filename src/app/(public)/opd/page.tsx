@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { db } from "@/lib/db";
+import { publicDb as db } from "@/lib/public-db";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, FileDown, Newspaper } from "lucide-react";
@@ -10,15 +10,15 @@ export const revalidate = 60;
 export const metadata = { title: "Direktori OPD" };
 
 export default async function DirektoriOpdPage() {
-  const opdList = await db.opd.findMany({
+  const [opdList, artikelCounts, publikasiCounts] = await Promise.all([
+    db.opd.findMany({
     where: { status: "AKTIF" },
     orderBy: { sortOrder: "asc" },
     include: { profil: true },
-  });
-
-  // hitung konten tiap OPD
-  const artikelCounts = await db.artikel.groupBy({ by: ["opdId"], where: { status: "PUBLISHED" }, _count: true });
-  const publikasiCounts = await db.publikasi.groupBy({ by: ["opdId"], where: { status: "PUBLISHED" }, _count: true });
+    }),
+    db.artikel.groupBy({ by: ["opdId"], where: { status: "PUBLISHED" }, _count: true }),
+    db.publikasi.groupBy({ by: ["opdId"], where: { status: "PUBLISHED" }, _count: true }),
+  ]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12">

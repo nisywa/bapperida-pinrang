@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { publicDb as db } from "@/lib/public-db";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Landmark, Target, Eye, Building2, MapPinned, ShieldCheck } from "lucide-react";
 

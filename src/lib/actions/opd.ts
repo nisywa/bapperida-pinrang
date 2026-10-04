@@ -1,6 +1,7 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
+import { PUBLIC_DATA_TAG } from "@/lib/public-db";
 import { db } from "@/lib/db";
 import { logActivity } from "@/lib/audit";
 import { requireInternal, recomputeProgres, hashPassword } from "@/lib/actions/helpers";
@@ -303,6 +304,7 @@ export async function simpanArtikel(formData: FormData): Promise<ActionResult> {
       await logActivity({ actor: session, action: "UPDATE", entityType: "Artikel", entityId: id, detail: `Mengubah artikel "${judul}"` });
       revalidatePath("/backoffice/opd-konten");
       revalidatePath("/backoffice/konten");
+      updateTag(PUBLIC_DATA_TAG);
       revalidatePath("/", "layout");
       return { ok: true, message: "Artikel berhasil diperbarui." };
     }
@@ -357,6 +359,7 @@ export async function publikasikanArtikel(id: string): Promise<ActionResult> {
     });
     revalidatePath("/backoffice/opd-konten");
     revalidatePath("/backoffice/konten");
+    updateTag(PUBLIC_DATA_TAG);
     revalidatePath("/", "layout");
     revalidatePath("/berita");
     return { ok: true, message: publish ? "Artikel dipublikasikan." : "Artikel dikembalikan ke draft." };
@@ -378,6 +381,7 @@ export async function hapusArtikel(id: string): Promise<ActionResult> {
     await logActivity({ actor: session, action: "DELETE", entityType: "Artikel", entityId: id, detail: `Menghapus artikel "${artikel.judul}"` });
     revalidatePath("/backoffice/opd-konten");
     revalidatePath("/backoffice/konten");
+    updateTag(PUBLIC_DATA_TAG);
     revalidatePath("/", "layout");
     return { ok: true, message: "Artikel dihapus." };
   } catch {
@@ -449,6 +453,7 @@ export async function publikasikanPublikasi(id: string): Promise<ActionResult> {
     });
     revalidatePath("/backoffice/opd-konten");
     revalidatePath("/backoffice/konten");
+    updateTag(PUBLIC_DATA_TAG);
     revalidatePath("/", "layout");
     revalidatePath("/publikasi");
     return { ok: true, message: publish ? "Publikasi terbit dan dapat diunduh masyarakat." : "Publikasi dikembalikan ke draft." };
@@ -469,6 +474,7 @@ export async function hapusPublikasi(id: string): Promise<ActionResult> {
     await logActivity({ actor: session, action: "DELETE", entityType: "Publikasi", entityId: id, detail: `Menghapus publikasi "${pub.judul}"` });
     revalidatePath("/backoffice/opd-konten");
     revalidatePath("/backoffice/konten");
+    updateTag(PUBLIC_DATA_TAG);
     revalidatePath("/", "layout");
     return { ok: true, message: "Publikasi dihapus." };
   } catch {
@@ -514,6 +520,7 @@ export async function simpanProfilOpd(formData: FormData): Promise<ActionResult>
       },
     });
     await logActivity({ actor: session, action: "UPDATE", entityType: "OpdProfile", entityId: opdId, detail: "Memperbarui profil OPD" });
+    updateTag(PUBLIC_DATA_TAG);
     revalidatePath("/backoffice/opd-profil");
     return { ok: true, message: "Profil OPD berhasil diperbarui." };
   } catch {

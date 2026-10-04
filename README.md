@@ -139,6 +139,24 @@ agar unggahan baru dapat bertahan.
 Referensi: [Koneksi Prisma ke Supabase](https://supabase.com/docs/guides/database/prisma)
 dan [Migrasi PostgreSQL ke Supabase](https://supabase.com/docs/guides/platform/migrating-to-supabase/postgres).
 
+## Kecepatan navigasi di Vercel
+
+`vercel.json` menempatkan Functions di Tokyo (`hnd1`), sesuai lokasi Supabase
+`ap-northeast-1`. Redeploy agar region ini berlaku. Jika database dipindahkan
+ke region lain, sesuaikan region Functions agar tetap dekat dengan database.
+
+Query halaman publik memakai cache server selama 60 detik. Perubahan konten,
+profil OPD, master data, dan publikasi dataset melalui aplikasi langsung
+menghapus cache terkait. Perubahan langsung lewat SQL Editor terlihat setelah
+revalidasi cache. Backoffice tetap membaca data aktual; pemeriksaan sesi hanya
+digabungkan dalam request yang sama, tidak disimpan lintas pengguna.
+
+Pool Prisma Supabase memakai tiga koneksi agar query independen tidak harus
+antre satu per satu. URL lama dengan `connection_limit=1` disesuaikan menjadi
+tiga oleh aplikasi. Loading UI membuat navigasi menampilkan respons segera,
+dan menu backoffice mobile menggunakan navigasi Next.js tanpa memuat ulang
+seluruh halaman. Request pertama saat cache kosong tetap membutuhkan database.
+
 ## Foto artikel
 
 Pada database yang sudah ada, jalankan pembaruan kolom foto sebelum menjalankan versi ini:

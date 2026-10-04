@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { publicDb as db } from "@/lib/public-db";
 import { PublicNavbar } from "@/components/public/navbar";
 import { PublicFooter } from "@/components/public/footer";
 

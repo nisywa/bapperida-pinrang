@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import { cache } from "react";
 import { cookies } from "next/headers";
 import { db } from "@/lib/db";
 import type { InternalRole } from "@/lib/roles";
@@ -77,7 +78,7 @@ export async function destroySession() {
   cookieStore.delete(COOKIE_NAME);
 }
 
-export async function getSession(): Promise<SessionUser | null> {
+export const getSession = cache(async (): Promise<SessionUser | null> => {
   const cookieStore = await cookies();
   const token = cookieStore.get(COOKIE_NAME)?.value;
   if (!token) return null;
@@ -98,7 +99,7 @@ export async function getSession(): Promise<SessionUser | null> {
     opdNama: user.opd?.nama ?? null,
     opdSlug: user.opd?.slug ?? null,
   };
-}
+});
 
 export async function authenticate(email: string, password: string): Promise<SessionUser | null> {
   const user = await db.user.findUnique({
