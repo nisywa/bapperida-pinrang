@@ -5,7 +5,7 @@
   "scripts": {
     "predev": "node scripts/start-local-db.mjs",
     "dev": "next dev -p 3000 2>&1 | tee dev.log",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "build:selfhost": "next build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/",
     "start": "next start",
     "start:standalone": "NODE_ENV=production bun .next/standalone/server.js 2>&1 | tee server.log",
@@ -13,6 +13,7 @@
     "db:start": "node scripts/start-local-db.mjs",
     "db:push": "prisma db push --accept-data-loss",
     "db:generate": "prisma generate",
+    "db:export:supabase": "node scripts/export-supabase.mjs",
     "db:migrate": "prisma migrate dev",
     "db:reset": "prisma migrate reset"
   },

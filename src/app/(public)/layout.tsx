@@ -2,6 +2,9 @@ import { db } from "@/lib/db";
 import { PublicNavbar } from "@/components/public/navbar";
 import { PublicFooter } from "@/components/public/footer";
 
+// Read public data at request time, without database queries during build.
+export const dynamic = "force-dynamic";
+
 export default async function PublicLayout({
   children,
 }: {
