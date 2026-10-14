@@ -1,5 +1,59 @@
 # Menjalankan aplikasi secara lokal
 
+## Demo visualisasi dua indikator per OPD
+
+Jalankan `npm run db:seed:opd-demo -- --year=2026` untuk menambahkan periode
+`DEMO-OPD-2026`, dua penugasan indikator per OPD, dan jawaban bervariasi pada
+seluruh kecamatan aktif. Script menambahkan data tanpa reset dan mempertahankan
+jawaban yang sudah ada jika dijalankan ulang. Data demo tidak dipublikasikan.
+
+Halaman login menyediakan pilihan **Demo visualisasi OPD · 2 indikator** untuk
+delapan OPD. Akun menggunakan pola `demo.<slug-opd>@pinrang.go.id` dengan kata
+sandi demo `DemoOpd#2026`, role `OPD`, dan cakupan dinas masing-masing. Akun
+Admin, Bapperida, serta akun OPD lama tetap menggunakan pengaturan sebelumnya.
+Pemetaan dinas dan indikator berada pada `src/data/opd-demo.json`.
+
+Menu **Visualisasi Data** memiliki filter indikator, periode, dan metrik wilayah,
+serta menampilkan peta, grafik peringkat kecamatan, jumlah, rata-rata, dan nilai
+tertinggi. Untuk metrik persen, kartu pertama menampilkan jumlah kecamatan
+terisi, bukan penjumlahan persentase. Periode demo diberi penanda data dummy.
+Pilihan dan pengambilan jawaban sama-sama dibatasi oleh OPD pengguna di server.
+
+Pengujian: `node scripts/test-opd-visualizations.cjs` dan
+`node scripts/test-opd-visualizations.cjs --integration` setelah seeding.
+
+## Pengelolaan indikator dan pengisian OPD
+
+Bapperida mengelola struktur **Indikator → Aspek → Pertanyaan → Jawaban**
+melalui menu **Indikator & Pertanyaan** (`/backoffice/indikator`). Indikator,
+aspek, dan pertanyaan dapat ditambah dan diedit. Pertanyaan mendukung radio
+button, checkbox, angka, teks, dan dropdown. Radio, checkbox, dan dropdown
+memerlukan 2–50 pilihan, satu pilihan per baris. Pratinjau jawaban ditampilkan
+di bawah setiap pertanyaan. Penghapusan pertanyaan mengarsipkannya dari
+formulir aktif dan mempertahankan riwayat jawaban; aspek hanya dapat dihapus
+jika kosong dan tidak memiliki riwayat jawaban. Indikator dapat dinonaktifkan.
+
+Melalui **Penugasan Indikator**, Bapperida memilih indikator, satu atau beberapa
+OPD aktif, dan periode pengisian. Pertanyaan wajib/opsional mengikuti pengaturan
+pertanyaan. Rentang pengisian berlaku inklusif dalam WITA, mulai pukul 00.00
+sampai 23.59 pada tanggal selesai; periode satu hari didukung. Tenggat opsional
+harus berada dalam rentang periode. Bapperida dapat mengedit, menutup/membuka
+kembali periode, serta mengubah tenggat dan menonaktifkan akses tiap penugasan.
+
+Server memeriksa kepemilikan OPD, status akses, tanggal mulai/selesai, tenggat,
+pertanyaan target, dan pilihan jawaban ketika menyimpan atau mengirim data.
+Checkbox disimpan sebagai array JSON dalam kolom teks. Nilai kosong tidak
+memenuhi pertanyaan wajib; angka nol merupakan jawaban yang valid. Draft
+disimpan atomik dan jawaban yang sudah dikirim terkunci. Tipe, pilihan, dan
+dimensi pertanyaan yang sudah memiliki jawaban tidak dapat diubah; buat
+pertanyaan baru untuk format berbeda. Pertanyaan baru disinkronkan ke
+penugasan aktif yang belum dikirim, sementara kiriman lama memakai targetnya.
+Tipe pertanyaan lama tetap didukung tanpa migrasi database.
+
+Pengujian aturan dan validasi: `node scripts/test-questionnaire.cjs`.
+Pengujian alur dengan data sementara di database:
+`node scripts/test-questionnaire.cjs --integration`.
+
 Aplikasi menggunakan **PostgreSQL**, sesuai `prisma/schema.prisma`.
 Koneksi aktif di `.env` menggunakan **Supabase**. URL database lokal lama
 dipertahankan sebagai `LOCAL_DATABASE_URL` untuk ekspor/cadangan.
@@ -25,6 +79,29 @@ Untuk menyalakan database saja:
 ```sh
 npm run db:start
 ```
+
+### Jika koneksi Supabase gagal saat pengembangan
+
+Jika Supabase mengembalikan `tenant/user ... not found`, periksa hostname dan
+nama pengguna pada **Supabase > Connect**. Port yang dapat dijangkau belum
+berarti identitas proyek pada connection string sudah benar. Pastikan proyek
+aktif dan gunakan connection string proyek tersebut; jangan menebak hostname
+atau project reference.
+
+Untuk menjalankan data lokal yang sudah ada, buat `.env.development.local`
+dengan menyalin nilai `LOCAL_DATABASE_URL` yang tersimpan di `.env` ke kedua
+variabel berikut:
+
+```dotenv
+DATABASE_URL="postgresql://USER:PASSWORD@localhost:5433/baperida_pinrang"
+DIRECT_URL="postgresql://USER:PASSWORD@localhost:5433/baperida_pinrang"
+```
+
+File ini hanya berlaku pada mode pengembangan dan tidak masuk Git. Mulai ulang
+server dengan `npm run dev` agar koneksi Prisma lama dilepas. Langkah `predev`
+menyalakan PostgreSQL lokal tanpa reset atau seed. Deployment tetap menggunakan
+konfigurasi Supabase, yang harus diperbaiki secara terpisah jika koneksinya gagal.
+Hapus override ini dan mulai ulang server ketika ingin menguji Supabase kembali.
 
 PostgreSQL dicari di `C:\Program Files\PostgreSQL\<versi>\bin`, dengan versi
 sesuai `.postgres-data/PG_VERSION`. Jika instalasinya berada di lokasi lain,
@@ -157,7 +234,27 @@ tiga oleh aplikasi. Loading UI membuat navigasi menampilkan respons segera,
 dan menu backoffice mobile menggunakan navigasi Next.js tanpa memuat ulang
 seluruh halaman. Request pertama saat cache kosong tetap membutuhkan database.
 
+## Logo dinas OPD
+
+OPD mengunggah logo melalui Profil OPD, lalu klik Simpan Profil. Format PNG,
+JPG, atau WebP dengan ukuran maksimal 2 MB. Server memvalidasi gambar,
+memperkecilnya hingga 512 piksel, dan menyimpan hasil WebP pada kolom
+`OpdProfile.logoUrl` di PostgreSQL sehingga tetap tersedia di Vercel.
+Logo default `public/opd-logo-default.svg` ditampilkan jika logo belum diunggah.
+Logo yang sama digunakan pada profil, daftar OPD, dan beranda portal publik.
+
+Database lama memerlukan `prisma/updates/add-opd-logo.sql`, kemudian jalankan
+`npm run db:generate` saat server berhenti. Penambahan kolom ini sudah diterapkan
+pada Supabase yang digunakan pengembangan. Data emoji lama tetap disimpan
+untuk kompatibilitas, tetapi tidak lagi digunakan pada tampilan logo OPD.
+
 ## Foto artikel
+
+Pengelolaan artikel dan publikasi hanya tersedia untuk role `BAPPERIDA` melalui
+`/backoffice/konten`. Role OPD dan Admin tidak memiliki menu atau izin mengubah
+konten. Alamat lama `/backoffice/opd-konten` mengarah kembali ke dashboard.
+Konten yang sudah tersimpan tetap tersedia sesuai status publikasinya.
+Pengujian otorisasi aksi konten: `node scripts/test-content-access.cjs`.
 
 Pada database yang sudah ada, jalankan pembaruan kolom foto sebelum menjalankan versi ini:
 
@@ -167,3 +264,32 @@ npm run db:generate
 ```
 
 Formulir tambah dan edit artikel menerima foto JPG, PNG, atau WebP hingga 5 MB. Foto disimpan di `storage/article-images` dan digunakan pada daftar pengelolaan serta portal berita. Sertakan folder ini dalam cadangan dan pertahankan sebagai penyimpanan permanen pada server.
+
+## Analisis pengunjung website
+
+Menu masyarakat `/analisis-pengunjung` menampilkan jumlah kunjungan halaman,
+pengunjung unik dalam periode, total kunjungan keseluruhan, serta grafik dan
+rincian harian, bulanan, atau tahunan. Rentang tanggal termasuk kedua batas
+tanggal dan menggunakan WITA (Asia/Makassar). Grafik harian dibatasi 366 hari;
+gunakan bulanan atau tahunan untuk rentang lebih panjang.
+
+Pencatatan berlangsung saat halaman publik dibuka, dimuat ulang, atau pengguna
+berpindah halaman melalui menu. Prefetch dan klik yang tidak membuka halaman
+tidak dihitung. Pengunjung unik menggunakan ID acak dalam localStorage browser;
+perangkat/browser lain atau penghapusan localStorage dapat dihitung sebagai
+pengunjung baru. Tanpa localStorage, ID hanya bertahan selama halaman aktif.
+Tidak menyimpan alamat IP atau identitas akun. Data dimulai sejak fitur aktif.
+Statistik dibaca langsung tanpa cache; tombol Perbarui data mengambil data terbaru.
+
+Untuk database instalasi lain, jalankan pembaruan berikut dan buat ulang klien
+Prisma saat server pengembangan berhenti:
+
+```sh
+npx prisma db execute --file prisma/updates/add-website-visits.sql --schema prisma/schema.prisma
+npm run db:generate
+```
+
+Pengujian tanggal: `node scripts/test-visitor-analytics.cjs`.
+Pengujian database dan API dengan server aktif di port 3000:
+`node scripts/test-visitor-analytics.cjs --integration`.
+Pengujian integrasi membuat data sementara dan membersihkannya kembali.

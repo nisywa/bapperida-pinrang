@@ -10,6 +10,9 @@ export const JAWABAN_STATUS = {
 export type JawabanStatus = keyof typeof JAWABAN_STATUS;
 
 export const TIPE_JAWABAN = {
+  RADIO: "Radio button",
+  CHECKBOX: "Checkbox",
+  DROPDOWN: "Dropdown",
   TEXT: "Teks",
   NUMBER: "Angka",
   DATE: "Tanggal",

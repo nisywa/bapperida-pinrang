@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { getPinrangGeometry } from "@/lib/pinrang-boundaries";
 import { getSession } from "@/lib/auth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChoroplethMap } from "@/components/public/choropleth-map";
@@ -75,7 +76,7 @@ export default async function AnalitikPage({
       }
     }
     for (const w of wilayahList) {
-      polygons.push({ id: w.id, nama: w.nama, geometry: w.geometry ?? "[]", value: valueMap.get(w.id) ?? null });
+      polygons.push({ id: w.id, nama: w.nama, geometry: getPinrangGeometry(w.nama, w.geometry), value: valueMap.get(w.id) ?? null });
     }
   }
 

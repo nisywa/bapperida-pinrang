@@ -14,6 +14,7 @@
     "db:push": "prisma db push --accept-data-loss",
     "db:generate": "prisma generate",
     "db:export:supabase": "node scripts/export-supabase.mjs",
+    "db:seed:opd-demo": "node scripts/seed-opd-visualizations.cjs",
     "db:migrate": "prisma migrate dev",
     "db:reset": "prisma migrate reset"
   },

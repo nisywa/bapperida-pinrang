@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatTanggal, JAWABAN_STATUS, TIPE_JAWABAN } from "@/lib/constants";
 import { ChevronLeft, MessageSquareWarning } from "lucide-react";
 import Link from "next/link";
+import { fillingError } from "@/lib/questionnaire";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Form Pengisian" };
@@ -38,6 +39,7 @@ export default async function PengisianDetailPage({
       periode: true,
       opd: true,
       progres: true,
+      pertanyaanTarget: true,
     },
   });
   if (!penugasan) notFound();
@@ -62,12 +64,18 @@ export default async function PengisianDetailPage({
       ? await db.verifikasi.findFirst({ where: { jawabanId: jawaban.id }, orderBy: { verifiedAt: "desc" } })
       : null;
 
-  const readOnly = jawaban?.status === "DIKIRIM" || jawaban?.status === "TERVERIFIKASI";
+  const frozen = jawaban?.status === "DIKIRIM" || jawaban?.status === "TERVERIFIKASI";
+  const readOnly = frozen || session.role !== "OPD";
+  const unavailable = fillingError(penugasan);
+  const targetMap = new Map(penugasan.pertanyaanTarget.map(target => [target.pertanyaanId, target.required]));
+  const visibleAspects = penugasan.indikator.aspek.map(aspect => ({ ...aspect, pertanyaan: aspect.pertanyaan.filter(q => targetMap.has(q.id) && (frozen || q.isActive)) })).filter(aspect => aspect.pertanyaan.length > 0);
+  const visibleQuestionIds = new Set(visibleAspects.flatMap(aspect => aspect.pertanyaan.map(q => q.id)));
   const st = JAWABAN_STATUS[(jawaban?.status ?? "BELUM") as keyof typeof JAWABAN_STATUS];
 
   // detail map: key = pertanyaanId + ":" + (wilayahId ?? "-")
   const detailMap = new Map<string, { valueText: string | null; valueNumber: number | null; valueBoolean: boolean | null; valueDate: string | null }>();
   for (const d of details) {
+    if (!visibleQuestionIds.has(d.pertanyaanId)) continue;
     detailMap.set(`${d.pertanyaanId}:${d.wilayahId ?? "-"}`, {
       valueText: d.valueText,
       valueNumber: d.valueNumber,
@@ -90,6 +98,7 @@ export default async function PengisianDetailPage({
             <p className="mt-1 text-sm text-emerald-100/90">
               {penugasan.indikator.kode} · {penugasan.periode.nama} · Deadline {formatTanggal(penugasan.deadline)}
             </p>
+            <p className="mt-2 text-xs text-emerald-100">Periode pengisian: {penugasan.periode.startDate.toLocaleString("id-ID", { timeZone: "Asia/Makassar" })} – {penugasan.periode.endDate.toLocaleString("id-ID", { timeZone: "Asia/Makassar" })} WITA</p>
           </div>
           <span className={`inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-medium backdrop-blur`}>
             <span className={`h-1.5 w-1.5 rounded-full ${st?.dot}`} />
@@ -116,7 +125,8 @@ export default async function PengisianDetailPage({
         </div>
       )}
 
-      {readOnly && (
+      {unavailable && <p role="status" className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">{unavailable}</p>}
+      {frozen && (
         <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
           Data dalam status <strong>{jawaban?.status === "DIKIRIM" ? "Dikirim" : "Terverifikasi"}</strong> dan
           terkunci dari pengeditan normal. Perubahan hanya melalui mekanisme workflow (penarikan oleh verifikator).
@@ -125,10 +135,11 @@ export default async function PengisianDetailPage({
 
       {/* Form */}
       <PengisianForm
+        key={`${jawaban?.id ?? "new"}-${[...visibleQuestionIds].join("-")}`}
         penugasanId={penugasan.id}
         readOnly={readOnly}
-        periodeAktif={penugasan.periode.status === "AKTIF"}
-        aspekList={penugasan.indikator.aspek.map((asp) => ({
+        periodeAktif={!unavailable}
+        aspekList={visibleAspects.map((asp) => ({
           id: asp.id,
           nama: asp.nama,
           pertanyaan: asp.pertanyaan.map((q) => ({
@@ -140,6 +151,7 @@ export default async function PengisianDetailPage({
             satuan: q.satuan,
             helpText: q.helpText,
             dimensiWilayah: q.dimensiWilayah,
+            required: targetMap.get(q.id) ?? q.wajibDefault,
             opsi: q.opsi.map((o) => o.label),
           })),
         }))}

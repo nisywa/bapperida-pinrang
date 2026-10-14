@@ -1,4 +1,5 @@
 import { publicDb as db } from "@/lib/public-db";
+import { getPinrangGeometry } from "@/lib/pinrang-boundaries";
 import type { MapPolygon as ChoroplethMapPolygon } from "@/components/public/choropleth-map";
 
 export type MapPolygon = ChoroplethMapPolygon;
@@ -79,7 +80,7 @@ export async function getDatasetPolygons(
   return wilayah.map((w) => ({
     id: w.id,
     nama: w.nama,
-    geometry: w.geometry ?? "[]",
+    geometry: getPinrangGeometry(w.nama, w.geometry),
     value: valueMap.get(w.id) ?? null,
   }));
 }

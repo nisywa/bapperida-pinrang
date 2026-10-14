@@ -21,12 +21,12 @@ export const MENUS: Record<string, MenuItem[]> = {
     { href: "/backoffice/admin/audit-log", label: "Audit Log", icon: ScrollText, group: "Administrasi" },
     { href: "/backoffice/monitoring", label: "Monitoring Data", icon: MonitorCheck, group: "Data" },
     { href: "/backoffice/verifikasi", label: "Verifikasi", icon: CheckSquare, group: "Data" },
-    { href: "/backoffice/konten", label: "Konten Portal", icon: Newspaper, group: "Konten" },
   ],
   BAPPERIDA: [
     { href: "/backoffice", label: "Dashboard", icon: LayoutDashboard, group: "Umum" },
     { href: "/backoffice/notifikasi-saya", label: "Notifikasi Saya", icon: BellRing, group: "Umum" },
     { href: "/backoffice/monitoring", label: "Monitoring Progres", icon: MonitorCheck, group: "Pengumpulan Data" },
+    { href: "/backoffice/indikator", label: "Indikator & Pertanyaan", icon: ClipboardList, group: "Pengumpulan Data" },
     { href: "/backoffice/penugasan", label: "Penugasan Indikator", icon: ClipboardList, group: "Pengumpulan Data" },
     { href: "/backoffice/verifikasi", label: "Verifikasi Data", icon: CheckSquare, group: "Verifikasi" },
     { href: "/backoffice/notifikasi", label: "Pusat Notifikasi", icon: BellRing, group: "Verifikasi" },
@@ -39,8 +39,7 @@ export const MENUS: Record<string, MenuItem[]> = {
     { href: "/backoffice/notifikasi-saya", label: "Notifikasi Saya", icon: BellRing, group: "Umum" },
     { href: "/backoffice/pengisian", label: "Pengisian Data", icon: FormInput, group: "Pengisian" },
     { href: "/backoffice/opd-analitik", label: "Visualisasi Data", icon: FileBarChart, group: "Analitik" },
-    { href: "/backoffice/opd-konten", label: "Konten OPD", icon: Newspaper, group: "Konten" },
-    { href: "/backoffice/opd-profil", label: "Profil OPD", icon: Building2, group: "Konten" },
+    { href: "/backoffice/opd-profil", label: "Profil OPD", icon: Building2, group: "Profil" },
     { href: "/backoffice/opd-akun", label: "Akun Saya", icon: UserCircle, group: "Akun" },
   ],
 };

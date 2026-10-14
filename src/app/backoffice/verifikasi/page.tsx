@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { VerifikasiPanel } from "@/components/backoffice/verifikasi-panel";
 import { formatTanggal, formatNumber, JAWABAN_STATUS, TIPE_JAWABAN } from "@/lib/constants";
 import { CheckSquare, ClipboardCheck, MapPinned } from "lucide-react";
+import { displayAnswerText } from "@/lib/questionnaire";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Verifikasi Data" };
@@ -44,6 +45,7 @@ export default async function VerifikasiPage({
               indikator: { include: { aspek: { include: { pertanyaan: true } } } },
               opd: true,
               periode: true,
+              pertanyaanTarget: true,
             },
           },
           verifikasi: { orderBy: { verifiedAt: "desc" } },
@@ -144,7 +146,7 @@ export default async function VerifikasiPage({
               .map((asp) => ({
                 id: asp.id,
                 nama: asp.nama,
-                pertanyaan: asp.pertanyaan
+                pertanyaan: asp.pertanyaan.filter(q => active.penugasan.pertanyaanTarget.some(target => target.pertanyaanId === q.id))
                   .sort((a, b) => a.sortOrder - b.sortOrder)
                   .map((q) => ({
                     id: q.id,
@@ -160,7 +162,7 @@ export default async function VerifikasiPage({
                         nilai:
                           d.valueNumber !== null && d.valueNumber !== undefined
                             ? formatNumber(d.valueNumber, d.valueNumber % 1 === 0 ? 0 : 1)
-                            : d.valueText ??
+                            : displayAnswerText(d.valueText, q.tipeJawaban) ??
                               (d.valueBoolean === true ? "Ya" : d.valueBoolean === false ? "Tidak" : null) ??
                               (d.valueDate ? formatTanggal(d.valueDate) : null) ??
                               "-",

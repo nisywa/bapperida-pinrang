@@ -105,7 +105,6 @@ async function AdminDashboard() {
               { href: "/backoffice/admin/pengguna", label: "Kelola Pengguna", desc: "Admin, Bapperida & OPD accounts" },
               { href: "/backoffice/admin/master", label: "Master Data", desc: "OPD, indikator, wilayah, periode" },
               { href: "/backoffice/monitoring", label: "Monitoring Data", desc: "Progres pengisian seluruh OPD" },
-              { href: "/backoffice/konten", label: "Konten Portal", desc: "Artikel & publikasi utama" },
             ].map((x) => (
               <Link
                 key={x.href}
@@ -277,7 +276,7 @@ async function OpdDashboard({ session }: { session: NonNullable<Awaited<ReturnTy
   });
 
   const kpis = [
-    { icon: ClipboardList, label: "Indikator Ditugaskan", value: dist.total },
+    { icon: ClipboardList, label: "Indikator Ditugaskan", value: new Set(rows.map(row => row.indikatorKode)).size },
     { icon: CheckCircle2, label: "Terverifikasi", value: dist.terverifikasi },
     { icon: Clock, label: "Menunggu / Draft", value: dist.terkirim + dist.draft },
     { icon: AlertTriangle, label: "Perlu Perbaikan", value: dist.perluPerbaikan },
@@ -318,7 +317,7 @@ async function OpdDashboard({ session }: { session: NonNullable<Awaited<ReturnTy
               return (
                 <Link
                   key={r.penugasanId}
-                  href="/backoffice/pengisian"
+                  href={`/backoffice/pengisian/${r.penugasanId}`}
                   className="block rounded-xl border p-4 transition-all hover:border-emerald-300 hover:bg-emerald-50/40"
                 >
                   <div className="flex items-center justify-between gap-3">
@@ -329,6 +328,7 @@ async function OpdDashboard({ session }: { session: NonNullable<Awaited<ReturnTy
                     </span>
                   </div>
                   <p className="mt-1 text-xs text-slate-500">
+                    {r.periodeNama} · {" "}
                     Deadline: {formatTanggal(r.deadline)} · Progres {formatNumber(r.percent, 0)}%
                   </p>
                   <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100">

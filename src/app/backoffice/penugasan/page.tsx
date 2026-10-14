@@ -1,12 +1,11 @@
 import { db } from "@/lib/db";
 import { getSession } from "@/lib/auth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { formatTanggal } from "@/lib/constants";
-import { ClipboardList, PlusCircle } from "lucide-react";
+import { ClipboardList } from "lucide-react";
 import { PenugasanForm } from "@/components/backoffice/penugasan-form";
 import { PenugasanList } from "@/components/backoffice/penugasan-list";
+import { PeriodManager } from "@/components/backoffice/period-manager";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Penugasan Indikator" };
@@ -19,7 +18,7 @@ export default async function PenugasanPage() {
 
   const [periodeList, indikatorList, opdList] = await Promise.all([
     db.periodePengisian.findMany({ orderBy: { startDate: "desc" } }),
-    db.indikator.findMany({ where: { isActive: true }, orderBy: { sortOrder: "asc" }, include: { aspek: { include: { _count: { select: { pertanyaan: true } } } } } }),
+    db.indikator.findMany({ where: { isActive: true }, orderBy: { sortOrder: "asc" }, include: { aspek: { orderBy: { sortOrder: "asc" }, include: { pertanyaan: { where: { isActive: true }, orderBy: { sortOrder: "asc" }, select: { id: true, pertanyaan: true, tipeJawaban: true } } } } } }),
     db.opd.findMany({ where: { status: "AKTIF" }, orderBy: { sortOrder: "asc" } }),
   ]);
 
@@ -43,6 +42,7 @@ export default async function PenugasanPage() {
         <p className="mt-1 text-sm text-slate-600">
           Tetapkan periode pengumpulan data dan tentukan OPD yang wajib mengisi tiap indikator beserta tenggatnya.
         </p>
+        <Link href="/backoffice/indikator" className="mt-3 inline-flex text-sm font-medium text-emerald-700 hover:underline">Kelola Indikator → Aspek → Pertanyaan →</Link>
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[400px_1fr]">
@@ -60,49 +60,22 @@ export default async function PenugasanPage() {
               id: i.id,
               nama: i.nama,
               kode: i.kode,
-              jumlahPertanyaan: i.aspek.reduce((a, asp) => a + asp._count.pertanyaan, 0),
+              jumlahPertanyaan: i.aspek.reduce((a, asp) => a + asp.pertanyaan.length, 0),
+              aspek: i.aspek.map(a => ({ nama: a.nama, pertanyaan: a.pertanyaan.map(q => ({ teks: q.pertanyaan, tipe: q.tipeJawaban })) })),
             }))}
             opdList={opdList.map((o) => ({ id: o.id, nama: o.nama, singkatan: o.singkatan }))}
           />
 
-          {/* Daftar periode */}
-          <Card className="border shadow-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm">Periode Pengisian</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2 p-3">
-              {periodeList.map((p) => (
-                <div key={p.id} className="flex items-center justify-between gap-2 rounded-lg bg-slate-50 px-3 py-2.5">
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-medium text-slate-900">{p.nama}</p>
-                    <p className="text-xs text-slate-500">
-                      {formatTanggal(p.startDate)} – {formatTanggal(p.endDate)}
-                    </p>
-                  </div>
-                  <Badge
-                    className={
-                      p.status === "AKTIF"
-                        ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-                        : "border-slate-200 bg-slate-100 text-slate-600"
-                    }
-                  >
-                    {p.status === "AKTIF" ? "Aktif" : "Ditutup"}
-                  </Badge>
-                </div>
-              ))}
-              {periodeList.length === 0 && (
-                <p className="p-3 text-center text-xs text-slate-500">Belum ada periode.</p>
-              )}
-            </CardContent>
-          </Card>
+          <PeriodManager periods={periodeList.map(p => ({ id: p.id, kode: p.kode, nama: p.nama, startDate: p.startDate.toISOString(), endDate: p.endDate.toISOString(), status: p.status }))} />
         </div>
 
         {/* Daftar penugasan */}
-        <Card className="border shadow-sm">
-          <CardHeader className="pb-3">
+        <div className="min-w-0 xl:relative">
+        <Card className="overflow-hidden border shadow-sm xl:absolute xl:inset-0">
+          <CardHeader className="shrink-0 pb-3">
             <CardTitle className="text-base">Daftar Penugasan ({penugasanList.length})</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="max-h-[70vh] min-h-0 overflow-y-auto xl:max-h-none xl:flex-1">
             <PenugasanList
               items={penugasanList.map((p) => ({
                 id: p.id,
@@ -113,10 +86,14 @@ export default async function PenugasanPage() {
                 status: p.jawaban[0]?.status ?? "BELUM",
                 percent: p.progres?.percent ?? 0,
                 periodeStatus: p.periode.status,
+                accessStatus: p.status,
+                periodStart: p.periode.startDate.toISOString(),
+                periodEnd: p.periode.endDate.toISOString(),
               }))}
             />
           </CardContent>
         </Card>
+        </div>
       </div>
     </div>
   );

@@ -9,11 +9,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
+import demoOpds from "@/data/opd-demo.json";
 
 const DEMO_ACCOUNTS = [
   { role: "Administrator", icon: UserCog, email: "admin@pinrang.go.id", password: "Admin#123", desc: "Kelola user, master data, audit log" },
   { role: "Bapperida", icon: ShieldCheck, email: "bapperida@pinrang.go.id", password: "Bapperida#123", desc: "Monitoring, verifikasi, publikasi data" },
-  { role: "OPD", icon: Building2, email: "dinaskesehatan@pinrang.go.id", password: "Opd#123", desc: "Isi indikator, kelola konten OPD" },
+  { role: "OPD", icon: Building2, email: "dinaskesehatan@pinrang.go.id", password: "Opd#123", desc: "Isi indikator, visualisasi dan profil OPD" },
 ];
 
 export default function LoginPage() {
@@ -22,6 +23,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [demoOpd, setDemoOpd] = useState(demoOpds[0].slug);
 
   async function doLogin(e?: React.FormEvent, creds?: { email: string; password: string }) {
     e?.preventDefault();
@@ -179,6 +181,12 @@ export default function LoginPage() {
                   </Card>
                 </button>
               ))}
+            </div>
+            <div className="mt-4 rounded-xl border border-emerald-100 bg-emerald-50/60 p-4">
+              <label className="block text-sm font-semibold text-emerald-900" htmlFor="demo-opd">Demo visualisasi OPD · 2 indikator</label>
+              <select id="demo-opd" value={demoOpd} onChange={event => setDemoOpd(event.target.value)} disabled={loading} className="mt-3 h-10 w-full rounded-lg border bg-white px-2 text-sm">{demoOpds.map(opd => <option key={opd.slug} value={opd.slug}>{opd.nama}</option>)}</select>
+              <Button type="button" variant="outline" className="mt-3 w-full" disabled={loading} onClick={() => doLogin(undefined, { email: `demo.${demoOpd}@pinrang.go.id`, password: "DemoOpd#2026" })}>Masuk demo OPD terpilih</Button>
+              <p className="mt-2 text-xs leading-relaxed text-slate-500">Akun demo ber-role OPD dan hanya melihat data dinas yang dipilih. Password: <span className="font-mono">DemoOpd#2026</span>.</p>
             </div>
           </div>
         </div>

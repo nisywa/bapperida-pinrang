@@ -4,20 +4,7 @@ import { db } from "@/lib/db";
 import { getSession, hashPassword, type SessionUser } from "@/lib/auth";
 import { logActivity } from "@/lib/audit";
 import type { InternalRole } from "@/lib/roles";
-
-function hasDetailValue(detail: {
-  valueText: string | null;
-  valueNumber: number | null;
-  valueDate: Date | null;
-  valueBoolean: boolean | null;
-}) {
-  return (
-    (detail.valueText !== null && detail.valueText.trim() !== "") ||
-    detail.valueNumber !== null ||
-    detail.valueDate !== null ||
-    detail.valueBoolean !== null
-  );
-}
+import { hasAnswer as hasDetailValue } from "@/lib/questionnaire";
 
 /** Hitung ulang cache progres pengisian (bukan sumber kebenaran) */
 export async function recomputeProgres(penugasanId: string) {
@@ -27,20 +14,19 @@ export async function recomputeProgres(penugasanId: string) {
   });
   if (!penugasan) return;
 
-  const wilayahCount = await db.wilayah.count({ where: { isActive: true } });
-  let required = 0;
-  for (const t of penugasan.pertanyaanTarget) {
-    if (!t.required) continue;
-    required += t.pertanyaan.dimensiWilayah ? wilayahCount : 1;
-  }
-
   const jawaban = await db.jawabanOpd.findFirst({
     where: { penugasanId },
     orderBy: { version: "desc" },
     include: { detail: true },
   });
-  const filled = jawaban ? jawaban.detail.filter(hasDetailValue).length : 0;
-  const percent = required > 0 ? Math.min(100, Math.round((filled / required) * 1000) / 10) : 0;
+  const wilayah = await db.wilayah.findMany({ where: { isActive: true }, select: { id: true } });
+  const frozen = jawaban && ["DIKIRIM", "TERVERIFIKASI"].includes(jawaban.status);
+  const targets = penugasan.pertanyaanTarget.filter(t => t.required && (frozen || t.pertanyaan.isActive));
+  const requiredKeys = new Set(targets.flatMap(t => t.pertanyaan.dimensiWilayah ? wilayah.map(w => `${t.pertanyaanId}:${w.id}`) : [`${t.pertanyaanId}:-`]));
+  const required = requiredKeys.size;
+  const filledKeys = new Set(jawaban?.detail.filter(hasDetailValue).map(d => `${d.pertanyaanId}:${d.wilayahId ?? "-"}`).filter(key => requiredKeys.has(key)));
+  const filled = filledKeys.size;
+  const percent = required > 0 ? Math.min(100, Math.round((filled / required) * 1000) / 10) : 100;
 
   await db.progresPengisian.upsert({
     where: { penugasanId },

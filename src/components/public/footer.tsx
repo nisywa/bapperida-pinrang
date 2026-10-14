@@ -34,7 +34,7 @@ export function PublicFooter({
           <div>
             <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-[#4e7562]">Tautan Cepat</h3>
             <ul className="mt-4 space-y-2 text-sm">
-              {[['/profil','Profil Bapperida'],['/opd','Direktori OPD'],['/berita','Berita & Artikel'],['/data','Data & Statistik'],['/publikasi','Publikasi & Download']].map(([href,label]) => (
+              {[['/profil','Profil Bapperida'],['/opd','Direktori OPD'],['/berita','Berita & Artikel'],['/data','Data & Statistik'],['/publikasi','Publikasi & Download'],['/analisis-pengunjung','Analisis Pengunjung']].map(([href,label]) => (
                 <li key={href}><Link href={href} className="group inline-flex items-center gap-1.5 transition-colors hover:text-[#173c30]">{label}<ArrowUpRight className="h-3 w-3 opacity-0 transition-opacity group-hover:opacity-100" /></Link></li>
               ))}
             </ul>

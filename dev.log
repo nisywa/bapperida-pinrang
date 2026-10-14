@@ -2,189 +2,382 @@
 - Local:         http://localhost:3000
 - Network:       http://192.168.56.1:3000
 - Environments: .env
-✓ Ready in 21.5s
-✓ Running next.config.ts took 719ms
+✓ Ready in 1595ms
+✓ Running next.config.ts took 121ms
 - Experiments (use with caution):
   · serverActions
 
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."User"."id", "public"."User"."opdId", "public"."User"."nama", "public"."User"."email", "public"."User"."passwordHash", "public"."User"."role", "public"."User"."status", "public"."User"."lastLoginAt", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE ("public"."User"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."Opd"."id", "public"."Opd"."nama", "public"."Opd"."slug", "public"."Opd"."status" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1) OFFSET $2
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE ("public"."Opd"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."OpdProfile"."id", "public"."OpdProfile"."opdId", "public"."OpdProfile"."logoEmoji", "public"."OpdProfile"."logoUrl", "public"."OpdProfile"."warnaTema", "public"."OpdProfile"."deskripsi", "public"."OpdProfile"."visi", "public"."OpdProfile"."misi", "public"."OpdProfile"."alamat", "public"."OpdProfile"."telepon", "public"."OpdProfile"."emailPublic", "public"."OpdProfile"."heroRingkasan", "public"."OpdProfile"."updatedAt" FROM "public"."OpdProfile" WHERE "public"."OpdProfile"."opdId" IN ($1) OFFSET $2
+prisma:query COMMIT
+ GET /backoffice/opd-profil 200 in 6.0s (next.js: 1702ms, application-code: 4.3s)
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."User"."id", "public"."User"."opdId", "public"."User"."nama", "public"."User"."email", "public"."User"."passwordHash", "public"."User"."role", "public"."User"."status", "public"."User"."lastLoginAt", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE ("public"."User"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."JawabanOpd"."id", "public"."JawabanOpd"."penugasanId", "public"."JawabanOpd"."version", "public"."JawabanOpd"."status", "public"."JawabanOpd"."submittedAt", "public"."JawabanOpd"."lockedAt", "public"."JawabanOpd"."createdAt", "public"."JawabanOpd"."updatedAt" FROM "public"."JawabanOpd" WHERE "public"."JawabanOpd"."status" = $1 OFFSET $2
+prisma:query SELECT "public"."PenugasanOpd"."id", "public"."PenugasanOpd"."periodeId", "public"."PenugasanOpd"."indikatorId", "public"."PenugasanOpd"."opdId", "public"."PenugasanOpd"."deadline", "public"."PenugasanOpd"."status", "public"."PenugasanOpd"."createdAt", "public"."PenugasanOpd"."updatedAt" FROM "public"."PenugasanOpd" WHERE "public"."PenugasanOpd"."id" IN ($1,$2) OFFSET $3
+prisma:query SELECT "public"."Indikator"."id", "public"."Indikator"."kode", "public"."Indikator"."nama", "public"."Indikator"."deskripsi", "public"."Indikator"."satuanDefault", "public"."Indikator"."warna", "public"."Indikator"."isActive", "public"."Indikator"."sortOrder", "public"."Indikator"."createdAt", "public"."Indikator"."updatedAt" FROM "public"."Indikator" WHERE "public"."Indikator"."id" IN ($1,$2) OFFSET $3
+prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1,$2) OFFSET $3
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."PertanyaanIndikator"."id", "public"."PertanyaanIndikator"."aspekId", "public"."PertanyaanIndikator"."kode", "public"."PertanyaanIndikator"."pertanyaan", "public"."PertanyaanIndikator"."tipeJawaban", "public"."PertanyaanIndikator"."wajibDefault", "public"."PertanyaanIndikator"."dimensiWilayah", "public"."PertanyaanIndikator"."satuan", "public"."PertanyaanIndikator"."helpText", "public"."PertanyaanIndikator"."sortOrder", "public"."PertanyaanIndikator"."isActive" FROM "public"."PertanyaanIndikator" LEFT JOIN "public"."AspekIndikator" AS "j0" ON ("j0"."id") = ("public"."PertanyaanIndikator"."aspekId") WHERE ("public"."PertanyaanIndikator"."dimensiWilayah" = $1 AND "public"."PertanyaanIndikator"."isActive" = $2 AND ("j0"."indikatorId" = $3 AND ("j0"."id" IS NOT NULL))) ORDER BY "public"."PertanyaanIndikator"."sortOrder" ASC OFFSET $4
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."Wilayah"."id", "public"."Wilayah"."kodeBps", "public"."Wilayah"."nama", "public"."Wilayah"."jenis", "public"."Wilayah"."geometry", "public"."Wilayah"."centroidLat", "public"."Wilayah"."centroidLng", "public"."Wilayah"."isActive" FROM "public"."Wilayah" WHERE "public"."Wilayah"."isActive" = $1 ORDER BY "public"."Wilayah"."kodeBps" ASC OFFSET $2
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."DetailJawaban"."id", "public"."DetailJawaban"."jawabanId", "public"."DetailJawaban"."pertanyaanId", "public"."DetailJawaban"."wilayahId", "public"."DetailJawaban"."valueText", "public"."DetailJawaban"."valueNumber", "public"."DetailJawaban"."valueDate", "public"."DetailJawaban"."valueBoolean", "public"."DetailJawaban"."isPublic", "public"."DetailJawaban"."notes", "public"."DetailJawaban"."createdAt", "public"."DetailJawaban"."updatedAt" FROM "public"."DetailJawaban" LEFT JOIN "public"."JawabanOpd" AS "j0" ON ("j0"."id") = ("public"."DetailJawaban"."jawabanId") WHERE ("public"."DetailJawaban"."pertanyaanId" = $1 AND ("j0"."status" = $2 AND ("j0"."id" IS NOT NULL))) OFFSET $3
+prisma:query SELECT "public"."JawabanOpd"."id", "public"."JawabanOpd"."penugasanId", "public"."JawabanOpd"."version", "public"."JawabanOpd"."status", "public"."JawabanOpd"."submittedAt", "public"."JawabanOpd"."lockedAt", "public"."JawabanOpd"."createdAt", "public"."JawabanOpd"."updatedAt" FROM "public"."JawabanOpd" WHERE "public"."JawabanOpd"."id" IN ($1) OFFSET $2
+prisma:query COMMIT
+ GET /backoffice/analitik 200 in 5.8s (next.js: 160ms, application-code: 5.6s)
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."User"."id", "public"."User"."opdId", "public"."User"."nama", "public"."User"."email", "public"."User"."passwordHash", "public"."User"."role", "public"."User"."status", "public"."User"."lastLoginAt", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE ("public"."User"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."Opd"."id", "public"."Opd"."nama", "public"."Opd"."slug", "public"."Opd"."status" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1) OFFSET $2
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query INSERT INTO "public"."OpdProfile" ("id","opdId","logoEmoji","logoUrl","warnaTema","deskripsi","visi","misi","alamat","telepon","emailPublic","heroRingkasan","updatedAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) ON CONFLICT ("opdId") DO UPDATE SET "deskripsi" = $14, "visi" = $15, "misi" = $16, "alamat" = $17, "telepon" = $18, "emailPublic" = $19, "heroRingkasan" = $20, "logoUrl" = $21, "updatedAt" = $22 WHERE ("public"."OpdProfile"."opdId" = $23 AND 1=1) RETURNING "public"."OpdProfile"."id", "public"."OpdProfile"."opdId", "public"."OpdProfile"."logoEmoji", "public"."OpdProfile"."logoUrl", "public"."OpdProfile"."warnaTema", "public"."OpdProfile"."deskripsi", "public"."OpdProfile"."visi", "public"."OpdProfile"."misi", "public"."OpdProfile"."alamat", "public"."OpdProfile"."telepon", "public"."OpdProfile"."emailPublic", "public"."OpdProfile"."heroRingkasan", "public"."OpdProfile"."updatedAt"
+prisma:query COMMIT
+prisma:query SELECT 1
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query INSERT INTO "public"."ActivityLog" ("id","actorUserId","actorNama","actingRole","opdScopeNama","action","entityType","entityId","detail","ipAddress","userAgent","createdAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING "public"."ActivityLog"."id", "public"."ActivityLog"."actorUserId", "public"."ActivityLog"."actorNama", "public"."ActivityLog"."actingRole", "public"."ActivityLog"."opdScopeNama", "public"."ActivityLog"."action", "public"."ActivityLog"."entityType", "public"."ActivityLog"."entityId", "public"."ActivityLog"."detail", "public"."ActivityLog"."ipAddress", "public"."ActivityLog"."userAgent", "public"."ActivityLog"."createdAt"
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."User"."id", "public"."User"."opdId", "public"."User"."nama", "public"."User"."email", "public"."User"."passwordHash", "public"."User"."role", "public"."User"."status", "public"."User"."lastLoginAt", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE ("public"."User"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."Opd"."id", "public"."Opd"."nama", "public"."Opd"."slug", "public"."Opd"."status" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1) OFFSET $2
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE ("public"."Opd"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."User"."id", "public"."User"."opdId", "public"."User"."nama", "public"."User"."email", "public"."User"."passwordHash", "public"."User"."role", "public"."User"."status", "public"."User"."lastLoginAt", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE ("public"."User"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."Opd"."id", "public"."Opd"."nama", "public"."Opd"."slug", "public"."Opd"."status" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1) OFFSET $2
+prisma:query SELECT "public"."OpdProfile"."id", "public"."OpdProfile"."opdId", "public"."OpdProfile"."logoEmoji", "public"."OpdProfile"."logoUrl", "public"."OpdProfile"."warnaTema", "public"."OpdProfile"."deskripsi", "public"."OpdProfile"."visi", "public"."OpdProfile"."misi", "public"."OpdProfile"."alamat", "public"."OpdProfile"."telepon", "public"."OpdProfile"."emailPublic", "public"."OpdProfile"."heroRingkasan", "public"."OpdProfile"."updatedAt" FROM "public"."OpdProfile" WHERE "public"."OpdProfile"."opdId" IN ($1) OFFSET $2
+prisma:query COMMIT
+prisma:query COMMIT
+ POST /backoffice/opd-profil 200 in 5.1s (next.js: 10ms, application-code: 5.1s)
+  └─ ƒ simpanProfilOpd({}) in 2772ms src/lib/actions/opd.ts
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE ("public"."Opd"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."OpdProfile"."id", "public"."OpdProfile"."opdId", "public"."OpdProfile"."logoEmoji", "public"."OpdProfile"."logoUrl", "public"."OpdProfile"."warnaTema", "public"."OpdProfile"."deskripsi", "public"."OpdProfile"."visi", "public"."OpdProfile"."misi", "public"."OpdProfile"."alamat", "public"."OpdProfile"."telepon", "public"."OpdProfile"."emailPublic", "public"."OpdProfile"."heroRingkasan", "public"."OpdProfile"."updatedAt" FROM "public"."OpdProfile" WHERE "public"."OpdProfile"."opdId" IN ($1) OFFSET $2
+prisma:query COMMIT
+ GET /backoffice/opd-profil 200 in 3.2s (next.js: 15ms, application-code: 3.2s)
+prisma:query SELECT "public"."User"."id", "public"."User"."opdId", "public"."User"."nama", "public"."User"."email", "public"."User"."passwordHash", "public"."User"."role", "public"."User"."status", "public"."User"."lastLoginAt", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE ("public"."User"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."Opd"."id", "public"."Opd"."nama", "public"."Opd"."slug", "public"."Opd"."status" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1) OFFSET $2
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."JawabanOpd"."id", "public"."JawabanOpd"."penugasanId", "public"."JawabanOpd"."version", "public"."JawabanOpd"."status", "public"."JawabanOpd"."submittedAt", "public"."JawabanOpd"."lockedAt", "public"."JawabanOpd"."createdAt", "public"."JawabanOpd"."updatedAt" FROM "public"."JawabanOpd" LEFT JOIN "public"."PenugasanOpd" AS "j0" ON ("j0"."id") = ("public"."JawabanOpd"."penugasanId") WHERE ("public"."JawabanOpd"."status" = $1 AND ("j0"."opdId" = $2 AND ("j0"."id" IS NOT NULL))) LIMIT $3 OFFSET $4
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."JawabanOpd"."id", "public"."JawabanOpd"."penugasanId", "public"."JawabanOpd"."version", "public"."JawabanOpd"."status", "public"."JawabanOpd"."submittedAt", "public"."JawabanOpd"."lockedAt", "public"."JawabanOpd"."createdAt", "public"."JawabanOpd"."updatedAt" FROM "public"."JawabanOpd" LEFT JOIN "public"."PenugasanOpd" AS "j0" ON ("j0"."id") = ("public"."JawabanOpd"."penugasanId") WHERE ("public"."JawabanOpd"."status" IN ($1,$2) AND ("j0"."opdId" = $3 AND ("j0"."id" IS NOT NULL))) LIMIT $4 OFFSET $5
+prisma:query COMMIT
+ GET /backoffice/opd-analitik 200 in 2.7s (next.js: 136ms, application-code: 2.6s)
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."User"."id", "public"."User"."opdId", "public"."User"."nama", "public"."User"."email", "public"."User"."passwordHash", "public"."User"."role", "public"."User"."status", "public"."User"."lastLoginAt", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE ("public"."User"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."Opd"."id", "public"."Opd"."nama", "public"."Opd"."slug", "public"."Opd"."status" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1) OFFSET $2
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE ("public"."Opd"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."OpdProfile"."id", "public"."OpdProfile"."opdId", "public"."OpdProfile"."logoEmoji", "public"."OpdProfile"."logoUrl", "public"."OpdProfile"."warnaTema", "public"."OpdProfile"."deskripsi", "public"."OpdProfile"."visi", "public"."OpdProfile"."misi", "public"."OpdProfile"."alamat", "public"."OpdProfile"."telepon", "public"."OpdProfile"."emailPublic", "public"."OpdProfile"."heroRingkasan", "public"."OpdProfile"."updatedAt" FROM "public"."OpdProfile" WHERE "public"."OpdProfile"."opdId" IN ($1) OFFSET $2
+prisma:query COMMIT
+ GET /backoffice/opd-profil 200 in 2.3s (next.js: 11ms, application-code: 2.3s)
+prisma:query SELECT 1
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."User"."id", "public"."User"."opdId", "public"."User"."nama", "public"."User"."email", "public"."User"."passwordHash", "public"."User"."role", "public"."User"."status", "public"."User"."lastLoginAt", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE ("public"."User"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."Opd"."id", "public"."Opd"."nama", "public"."Opd"."slug", "public"."Opd"."status" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1) OFFSET $2
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."JawabanOpd"."id", "public"."JawabanOpd"."penugasanId", "public"."JawabanOpd"."version", "public"."JawabanOpd"."status", "public"."JawabanOpd"."submittedAt", "public"."JawabanOpd"."lockedAt", "public"."JawabanOpd"."createdAt", "public"."JawabanOpd"."updatedAt" FROM "public"."JawabanOpd" LEFT JOIN "public"."PenugasanOpd" AS "j0" ON ("j0"."id") = ("public"."JawabanOpd"."penugasanId") WHERE ("public"."JawabanOpd"."status" = $1 AND ("j0"."opdId" = $2 AND ("j0"."id" IS NOT NULL))) LIMIT $3 OFFSET $4
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."JawabanOpd"."id", "public"."JawabanOpd"."penugasanId", "public"."JawabanOpd"."version", "public"."JawabanOpd"."status", "public"."JawabanOpd"."submittedAt", "public"."JawabanOpd"."lockedAt", "public"."JawabanOpd"."createdAt", "public"."JawabanOpd"."updatedAt" FROM "public"."JawabanOpd" LEFT JOIN "public"."PenugasanOpd" AS "j0" ON ("j0"."id") = ("public"."JawabanOpd"."penugasanId") WHERE ("public"."JawabanOpd"."status" IN ($1,$2) AND ("j0"."opdId" = $3 AND ("j0"."id" IS NOT NULL))) LIMIT $4 OFFSET $5
+prisma:query COMMIT
+ GET /backoffice/opd-analitik 200 in 2.7s (next.js: 13ms, application-code: 2.7s)
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."User"."id", "public"."User"."opdId", "public"."User"."nama", "public"."User"."email", "public"."User"."passwordHash", "public"."User"."role", "public"."User"."status", "public"."User"."lastLoginAt", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE ("public"."User"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."Opd"."id", "public"."Opd"."nama", "public"."Opd"."slug", "public"."Opd"."status" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1) OFFSET $2
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE ("public"."Opd"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."OpdProfile"."id", "public"."OpdProfile"."opdId", "public"."OpdProfile"."logoEmoji", "public"."OpdProfile"."logoUrl", "public"."OpdProfile"."warnaTema", "public"."OpdProfile"."deskripsi", "public"."OpdProfile"."visi", "public"."OpdProfile"."misi", "public"."OpdProfile"."alamat", "public"."OpdProfile"."telepon", "public"."OpdProfile"."emailPublic", "public"."OpdProfile"."heroRingkasan", "public"."OpdProfile"."updatedAt" FROM "public"."OpdProfile" WHERE "public"."OpdProfile"."opdId" IN ($1) OFFSET $2
+prisma:query COMMIT
+ GET /backoffice/opd-profil 200 in 2.2s (next.js: 9ms, application-code: 2.1s)
+prisma:query SELECT 1
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."User"."id", "public"."User"."opdId", "public"."User"."nama", "public"."User"."email", "public"."User"."passwordHash", "public"."User"."role", "public"."User"."status", "public"."User"."lastLoginAt", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE ("public"."User"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."Opd"."id", "public"."Opd"."nama", "public"."Opd"."slug", "public"."Opd"."status" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1) OFFSET $2
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."User"."id", "public"."User"."opdId", "public"."User"."nama", "public"."User"."email", "public"."User"."passwordHash", "public"."User"."role", "public"."User"."status", "public"."User"."lastLoginAt", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE ("public"."User"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1) OFFSET $2
+prisma:query COMMIT
+ GET /backoffice/opd-akun 200 in 4.0s (next.js: 1704ms, application-code: 2.3s)
+prisma:query SELECT 1
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."User"."id", "public"."User"."opdId", "public"."User"."nama", "public"."User"."email", "public"."User"."passwordHash", "public"."User"."role", "public"."User"."status", "public"."User"."lastLoginAt", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE ("public"."User"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query INSERT INTO "public"."ActivityLog" ("id","actorUserId","actorNama","actingRole","opdScopeNama","action","entityType","entityId","detail","ipAddress","userAgent","createdAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING "public"."ActivityLog"."id", "public"."ActivityLog"."actorUserId", "public"."ActivityLog"."actorNama", "public"."ActivityLog"."actingRole", "public"."ActivityLog"."opdScopeNama", "public"."ActivityLog"."action", "public"."ActivityLog"."entityType", "public"."ActivityLog"."entityId", "public"."ActivityLog"."detail", "public"."ActivityLog"."ipAddress", "public"."ActivityLog"."userAgent", "public"."ActivityLog"."createdAt"
+prisma:query COMMIT
+ POST /api/auth/logout 200 in 1785ms (next.js: 138ms, application-code: 1646ms)
+ GET /login 200 in 123ms (next.js: 73ms, application-code: 49ms)
+ GET /login 200 in 76ms (next.js: 22ms, application-code: 54ms)
+prisma:query SELECT 1
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
 prisma:query SELECT "public"."SiteSetting"."id", "public"."SiteSetting"."key", "public"."SiteSetting"."value", "public"."SiteSetting"."isPublic", "public"."SiteSetting"."updatedAt" FROM "public"."SiteSetting" WHERE 1=1 OFFSET $1
-prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."Wilayah"."id" FROM "public"."Wilayah" WHERE "public"."Wilayah"."isActive" = $1 OFFSET $2) AS "sub"
-prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."DatasetPublik"."id" FROM "public"."DatasetPublik" WHERE "public"."DatasetPublik"."status" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT "public"."SiteSetting"."id", "public"."SiteSetting"."key", "public"."SiteSetting"."value", "public"."SiteSetting"."isPublic", "public"."SiteSetting"."updatedAt" FROM "public"."SiteSetting" WHERE 1=1 OFFSET $1
+prisma:query COMMIT
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query BEGIN
+prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."status" = $1 ORDER BY "public"."Opd"."sortOrder" ASC OFFSET $2
+prisma:query DEALLOCATE ALL
 prisma:query SELECT "public"."Publikasi"."id", "public"."Publikasi"."opdId", "public"."Publikasi"."judul", "public"."Publikasi"."slug", "public"."Publikasi"."deskripsi", "public"."Publikasi"."tahun", "public"."Publikasi"."jenisFile", "public"."Publikasi"."status", "public"."Publikasi"."visibility", "public"."Publikasi"."downloadCount", "public"."Publikasi"."publishedAt", "public"."Publikasi"."createdBy", "public"."Publikasi"."createdAt", "public"."Publikasi"."updatedAt" FROM "public"."Publikasi" WHERE ("public"."Publikasi"."status" = $1 AND "public"."Publikasi"."visibility" = $2) ORDER BY "public"."Publikasi"."publishedAt" DESC LIMIT $3 OFFSET $4
 prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1,$2,$3) OFFSET $4
 prisma:query SELECT "public"."Artikel"."id", "public"."Artikel"."opdId", "public"."Artikel"."judul", "public"."Artikel"."slug", "public"."Artikel"."ringkasan", "public"."Artikel"."isi", "public"."Artikel"."thumbnailEmoji", "public"."Artikel"."thumbnailUrl", "public"."Artikel"."status", "public"."Artikel"."featured", "public"."Artikel"."showOnMainPortal", "public"."Artikel"."publishedAt", "public"."Artikel"."createdBy", "public"."Artikel"."createdAt", "public"."Artikel"."updatedAt" FROM "public"."Artikel" WHERE ("public"."Artikel"."status" = $1 AND "public"."Artikel"."featured" = $2) ORDER BY "public"."Artikel"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."SiteSetting"."id", "public"."SiteSetting"."key", "public"."SiteSetting"."value", "public"."SiteSetting"."isPublic", "public"."SiteSetting"."updatedAt" FROM "public"."SiteSetting" WHERE 1=1 OFFSET $1
-prisma:query SELECT "public"."Artikel"."id", "public"."Artikel"."opdId", "public"."Artikel"."judul", "public"."Artikel"."slug", "public"."Artikel"."ringkasan", "public"."Artikel"."isi", "public"."Artikel"."thumbnailEmoji", "public"."Artikel"."thumbnailUrl", "public"."Artikel"."status", "public"."Artikel"."featured", "public"."Artikel"."showOnMainPortal", "public"."Artikel"."publishedAt", "public"."Artikel"."createdBy", "public"."Artikel"."createdAt", "public"."Artikel"."updatedAt" FROM "public"."Artikel" WHERE ("public"."Artikel"."status" = $1 AND "public"."Artikel"."showOnMainPortal" = $2) ORDER BY "public"."Artikel"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1,$2) OFFSET $3
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."status" = $1 ORDER BY "public"."Opd"."sortOrder" ASC OFFSET $2
-prisma:query SELECT "public"."OpdProfile"."id", "public"."OpdProfile"."opdId", "public"."OpdProfile"."logoEmoji", "public"."OpdProfile"."warnaTema", "public"."OpdProfile"."deskripsi", "public"."OpdProfile"."visi", "public"."OpdProfile"."misi", "public"."OpdProfile"."alamat", "public"."OpdProfile"."telepon", "public"."OpdProfile"."emailPublic", "public"."OpdProfile"."heroRingkasan", "public"."OpdProfile"."updatedAt" FROM "public"."OpdProfile" WHERE "public"."OpdProfile"."opdId" IN ($1,$2,$3,$4,$5,$6,$7,$8) OFFSET $9
- GET / 200 in 10.6s (next.js: 4.8s, application-code: 5.9s)
-  Reload env: .env
-  Reload env: .env
-  Reload env: .env
-prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."DatasetPublik"."id" FROM "public"."DatasetPublik" WHERE "public"."DatasetPublik"."status" = $1 OFFSET $2) AS "sub"
-prisma:query SELECT "public"."SiteSetting"."id", "public"."SiteSetting"."key", "public"."SiteSetting"."value", "public"."SiteSetting"."isPublic", "public"."SiteSetting"."updatedAt" FROM "public"."SiteSetting" WHERE 1=1 OFFSET $1
-prisma:query SELECT "public"."Artikel"."id", "public"."Artikel"."opdId", "public"."Artikel"."judul", "public"."Artikel"."slug", "public"."Artikel"."ringkasan", "public"."Artikel"."isi", "public"."Artikel"."thumbnailEmoji", "public"."Artikel"."thumbnailUrl", "public"."Artikel"."status", "public"."Artikel"."featured", "public"."Artikel"."showOnMainPortal", "public"."Artikel"."publishedAt", "public"."Artikel"."createdBy", "public"."Artikel"."createdAt", "public"."Artikel"."updatedAt" FROM "public"."Artikel" WHERE ("public"."Artikel"."status" = $1 AND "public"."Artikel"."featured" = $2) ORDER BY "public"."Artikel"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."SiteSetting"."id", "public"."SiteSetting"."key", "public"."SiteSetting"."value", "public"."SiteSetting"."isPublic", "public"."SiteSetting"."updatedAt" FROM "public"."SiteSetting" WHERE 1=1 OFFSET $1
-prisma:query SELECT "public"."Artikel"."id", "public"."Artikel"."opdId", "public"."Artikel"."judul", "public"."Artikel"."slug", "public"."Artikel"."ringkasan", "public"."Artikel"."isi", "public"."Artikel"."thumbnailEmoji", "public"."Artikel"."thumbnailUrl", "public"."Artikel"."status", "public"."Artikel"."featured", "public"."Artikel"."showOnMainPortal", "public"."Artikel"."publishedAt", "public"."Artikel"."createdBy", "public"."Artikel"."createdAt", "public"."Artikel"."updatedAt" FROM "public"."Artikel" WHERE ("public"."Artikel"."status" = $1 AND "public"."Artikel"."showOnMainPortal" = $2) ORDER BY "public"."Artikel"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1,$2) OFFSET $3
-prisma:query SELECT "public"."SiteSetting"."id", "public"."SiteSetting"."key", "public"."SiteSetting"."value", "public"."SiteSetting"."isPublic", "public"."SiteSetting"."updatedAt" FROM "public"."SiteSetting" WHERE 1=1 OFFSET $1
-prisma:query SELECT "public"."SiteSetting"."id", "public"."SiteSetting"."key", "public"."SiteSetting"."value", "public"."SiteSetting"."isPublic", "public"."SiteSetting"."updatedAt" FROM "public"."SiteSetting" WHERE 1=1 OFFSET $1
-prisma:query SELECT "public"."Artikel"."id", "public"."Artikel"."opdId", "public"."Artikel"."judul", "public"."Artikel"."slug", "public"."Artikel"."ringkasan", "public"."Artikel"."isi", "public"."Artikel"."thumbnailEmoji", "public"."Artikel"."thumbnailUrl", "public"."Artikel"."status", "public"."Artikel"."featured", "public"."Artikel"."showOnMainPortal", "public"."Artikel"."publishedAt", "public"."Artikel"."createdBy", "public"."Artikel"."createdAt", "public"."Artikel"."updatedAt" FROM "public"."Artikel" WHERE ("public"."Artikel"."status" = $1 AND "public"."Artikel"."featured" = $2) ORDER BY "public"."Artikel"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."status" = $1 ORDER BY "public"."Opd"."sortOrder" ASC OFFSET $2
-prisma:query SELECT "public"."Artikel"."id", "public"."Artikel"."opdId", "public"."Artikel"."judul", "public"."Artikel"."slug", "public"."Artikel"."ringkasan", "public"."Artikel"."isi", "public"."Artikel"."thumbnailEmoji", "public"."Artikel"."thumbnailUrl", "public"."Artikel"."status", "public"."Artikel"."featured", "public"."Artikel"."showOnMainPortal", "public"."Artikel"."publishedAt", "public"."Artikel"."createdBy", "public"."Artikel"."createdAt", "public"."Artikel"."updatedAt" FROM "public"."Artikel" WHERE ("public"."Artikel"."status" = $1 AND "public"."Artikel"."showOnMainPortal" = $2) ORDER BY "public"."Artikel"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1,$2) OFFSET $3
-prisma:query SELECT "public"."OpdProfile"."id", "public"."OpdProfile"."opdId", "public"."OpdProfile"."logoEmoji", "public"."OpdProfile"."warnaTema", "public"."OpdProfile"."deskripsi", "public"."OpdProfile"."visi", "public"."OpdProfile"."misi", "public"."OpdProfile"."alamat", "public"."OpdProfile"."telepon", "public"."OpdProfile"."emailPublic", "public"."OpdProfile"."heroRingkasan", "public"."OpdProfile"."updatedAt" FROM "public"."OpdProfile" WHERE "public"."OpdProfile"."opdId" IN ($1,$2,$3,$4,$5,$6,$7,$8) OFFSET $9
-prisma:query SELECT "public"."Publikasi"."id", "public"."Publikasi"."opdId", "public"."Publikasi"."judul", "public"."Publikasi"."slug", "public"."Publikasi"."deskripsi", "public"."Publikasi"."tahun", "public"."Publikasi"."jenisFile", "public"."Publikasi"."status", "public"."Publikasi"."visibility", "public"."Publikasi"."downloadCount", "public"."Publikasi"."publishedAt", "public"."Publikasi"."createdBy", "public"."Publikasi"."createdAt", "public"."Publikasi"."updatedAt" FROM "public"."Publikasi" WHERE ("public"."Publikasi"."status" = $1 AND "public"."Publikasi"."visibility" = $2) ORDER BY "public"."Publikasi"."publishedAt" DESC LIMIT $3 OFFSET $4
+prisma:query SELECT "public"."OpdProfile"."id", "public"."OpdProfile"."opdId", "public"."OpdProfile"."logoEmoji", "public"."OpdProfile"."logoUrl", "public"."OpdProfile"."warnaTema", "public"."OpdProfile"."deskripsi", "public"."OpdProfile"."visi", "public"."OpdProfile"."misi", "public"."OpdProfile"."alamat", "public"."OpdProfile"."telepon", "public"."OpdProfile"."emailPublic", "public"."OpdProfile"."heroRingkasan", "public"."OpdProfile"."updatedAt" FROM "public"."OpdProfile" WHERE "public"."OpdProfile"."opdId" IN ($1,$2,$3,$4,$5,$6,$7,$8) OFFSET $9
+prisma:query COMMIT
+prisma:query COMMIT
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
 prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."Wilayah"."id" FROM "public"."Wilayah" WHERE "public"."Wilayah"."isActive" = $1 OFFSET $2) AS "sub"
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1,$2,$3) OFFSET $4
+prisma:query SELECT "public"."Artikel"."id", "public"."Artikel"."opdId", "public"."Artikel"."judul", "public"."Artikel"."slug", "public"."Artikel"."ringkasan", "public"."Artikel"."isi", "public"."Artikel"."thumbnailEmoji", "public"."Artikel"."thumbnailUrl", "public"."Artikel"."status", "public"."Artikel"."featured", "public"."Artikel"."showOnMainPortal", "public"."Artikel"."publishedAt", "public"."Artikel"."createdBy", "public"."Artikel"."createdAt", "public"."Artikel"."updatedAt" FROM "public"."Artikel" WHERE ("public"."Artikel"."status" = $1 AND "public"."Artikel"."showOnMainPortal" = $2) ORDER BY "public"."Artikel"."publishedAt" DESC LIMIT $3 OFFSET $4
 prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."DatasetPublik"."id" FROM "public"."DatasetPublik" WHERE "public"."DatasetPublik"."status" = $1 OFFSET $2) AS "sub"
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."status" = $1 ORDER BY "public"."Opd"."sortOrder" ASC OFFSET $2
-prisma:query SELECT "public"."OpdProfile"."id", "public"."OpdProfile"."opdId", "public"."OpdProfile"."logoEmoji", "public"."OpdProfile"."warnaTema", "public"."OpdProfile"."deskripsi", "public"."OpdProfile"."visi", "public"."OpdProfile"."misi", "public"."OpdProfile"."alamat", "public"."OpdProfile"."telepon", "public"."OpdProfile"."emailPublic", "public"."OpdProfile"."heroRingkasan", "public"."OpdProfile"."updatedAt" FROM "public"."OpdProfile" WHERE "public"."OpdProfile"."opdId" IN ($1,$2,$3,$4,$5,$6,$7,$8) OFFSET $9
-prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."Wilayah"."id" FROM "public"."Wilayah" WHERE "public"."Wilayah"."isActive" = $1 OFFSET $2) AS "sub"
-prisma:query SELECT "public"."Publikasi"."id", "public"."Publikasi"."opdId", "public"."Publikasi"."judul", "public"."Publikasi"."slug", "public"."Publikasi"."deskripsi", "public"."Publikasi"."tahun", "public"."Publikasi"."jenisFile", "public"."Publikasi"."status", "public"."Publikasi"."visibility", "public"."Publikasi"."downloadCount", "public"."Publikasi"."publishedAt", "public"."Publikasi"."createdBy", "public"."Publikasi"."createdAt", "public"."Publikasi"."updatedAt" FROM "public"."Publikasi" WHERE ("public"."Publikasi"."status" = $1 AND "public"."Publikasi"."visibility" = $2) ORDER BY "public"."Publikasi"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1,$2,$3) OFFSET $4
+prisma:query COMMIT
+prisma:query COMMIT
+prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1,$2) OFFSET $3
+prisma:query COMMIT
+ GET / 200 in 3.2s (next.js: 89ms, application-code: 3.1s)
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query SELECT COUNT(*) AS "_count$_all", "public"."Artikel"."opdId" FROM "public"."Artikel" WHERE "public"."Artikel"."status" = $1 GROUP BY "public"."Artikel"."opdId" OFFSET $2
+prisma:query SELECT COUNT(*) AS "_count$_all", "public"."Publikasi"."opdId" FROM "public"."Publikasi" WHERE "public"."Publikasi"."status" = $1 GROUP BY "public"."Publikasi"."opdId" OFFSET $2
+prisma:query COMMIT
+prisma:query COMMIT
+ GET /opd 200 in 961ms (next.js: 65ms, application-code: 896ms)
+ GET /kritik-saran 200 in 81ms (next.js: 43ms, application-code: 38ms)
+prisma:query SELECT 1
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."DatasetPublik"."id", "public"."DatasetPublik"."indikatorId", "public"."DatasetPublik"."periodeId", "public"."DatasetPublik"."version", "public"."DatasetPublik"."status", "public"."DatasetPublik"."publishedAt", "public"."DatasetPublik"."notes" FROM "public"."DatasetPublik" WHERE "public"."DatasetPublik"."status" = $1 ORDER BY "public"."DatasetPublik"."publishedAt" DESC LIMIT $2 OFFSET $3
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."DatasetPublik"."id", "public"."DatasetPublik"."indikatorId", "public"."DatasetPublik"."periodeId", "public"."DatasetPublik"."version", "public"."DatasetPublik"."status", "public"."DatasetPublik"."publishedAt", "public"."DatasetPublik"."notes" FROM "public"."DatasetPublik" WHERE "public"."DatasetPublik"."status" = $1 ORDER BY "public"."DatasetPublik"."publishedAt" DESC OFFSET $2
+prisma:query SELECT "public"."Indikator"."id", "public"."Indikator"."kode", "public"."Indikator"."nama", "public"."Indikator"."deskripsi", "public"."Indikator"."satuanDefault", "public"."Indikator"."warna", "public"."Indikator"."isActive", "public"."Indikator"."sortOrder", "public"."Indikator"."createdAt", "public"."Indikator"."updatedAt" FROM "public"."Indikator" WHERE "public"."Indikator"."id" IN ($1,$2) OFFSET $3
+prisma:query SELECT "public"."KonfigurasiVisualisasi"."id", "public"."KonfigurasiVisualisasi"."indikatorId", "public"."KonfigurasiVisualisasi"."chartType", "public"."KonfigurasiVisualisasi"."aggregation", "public"."KonfigurasiVisualisasi"."satuan", "public"."KonfigurasiVisualisasi"."paletteKey", "public"."KonfigurasiVisualisasi"."decimalPlaces", "public"."KonfigurasiVisualisasi"."visibility", "public"."KonfigurasiVisualisasi"."configJson" FROM "public"."KonfigurasiVisualisasi" WHERE "public"."KonfigurasiVisualisasi"."indikatorId" IN ($1,$2) OFFSET $3
+prisma:query SELECT "public"."PeriodePengisian"."id", "public"."PeriodePengisian"."kode", "public"."PeriodePengisian"."nama", "public"."PeriodePengisian"."startDate", "public"."PeriodePengisian"."endDate", "public"."PeriodePengisian"."status", "public"."PeriodePengisian"."lockAt", "public"."PeriodePengisian"."createdBy", "public"."PeriodePengisian"."createdAt", "public"."PeriodePengisian"."updatedAt" FROM "public"."PeriodePengisian" WHERE "public"."PeriodePengisian"."id" IN ($1) OFFSET $2
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."DatasetPublikDetail"."id", "public"."DatasetPublikDetail"."metricKey" FROM "public"."DatasetPublikDetail" WHERE "public"."DatasetPublikDetail"."datasetId" = $1 OFFSET $2
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."PertanyaanIndikator"."id", "public"."PertanyaanIndikator"."aspekId", "public"."PertanyaanIndikator"."kode", "public"."PertanyaanIndikator"."pertanyaan", "public"."PertanyaanIndikator"."tipeJawaban", "public"."PertanyaanIndikator"."wajibDefault", "public"."PertanyaanIndikator"."dimensiWilayah", "public"."PertanyaanIndikator"."satuan", "public"."PertanyaanIndikator"."helpText", "public"."PertanyaanIndikator"."sortOrder", "public"."PertanyaanIndikator"."isActive" FROM "public"."PertanyaanIndikator" WHERE "public"."PertanyaanIndikator"."kode" IN ($1,$2,$3) OFFSET $4
+prisma:query COMMIT
+prisma:query SELECT 1
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."Wilayah"."id", "public"."Wilayah"."kodeBps", "public"."Wilayah"."nama", "public"."Wilayah"."jenis", "public"."Wilayah"."geometry", "public"."Wilayah"."centroidLat", "public"."Wilayah"."centroidLng", "public"."Wilayah"."isActive" FROM "public"."Wilayah" WHERE "public"."Wilayah"."isActive" = $1 ORDER BY "public"."Wilayah"."kodeBps" ASC OFFSET $2
+prisma:query SELECT "public"."DatasetPublikDetail"."id", "public"."DatasetPublikDetail"."datasetId", "public"."DatasetPublikDetail"."opdId", "public"."DatasetPublikDetail"."wilayahId", "public"."DatasetPublikDetail"."metricKey", "public"."DatasetPublikDetail"."metricValue", "public"."DatasetPublikDetail"."metricText" FROM "public"."DatasetPublikDetail" WHERE ("public"."DatasetPublikDetail"."datasetId" = $1 AND "public"."DatasetPublikDetail"."metricKey" = $2) OFFSET $3
+prisma:query COMMIT
+prisma:query COMMIT
+(node:20704) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 drain listeners added to [Gzip]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+(Use `node --trace-warnings ...` to show where the warning was created)
+ GET /data 200 in 5.0s (next.js: 58ms, application-code: 5.0s)
+✓ Compiled in 9s
 ⚠ Fast Refresh had to perform a full reload when ./node_modules/next/dist/client/image-component.js changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
-prisma:query SELECT "public"."Artikel"."id", "public"."Artikel"."opdId", "public"."Artikel"."judul", "public"."Artikel"."slug", "public"."Artikel"."ringkasan", "public"."Artikel"."isi", "public"."Artikel"."thumbnailEmoji", "public"."Artikel"."thumbnailUrl", "public"."Artikel"."status", "public"."Artikel"."featured", "public"."Artikel"."showOnMainPortal", "public"."Artikel"."publishedAt", "public"."Artikel"."createdBy", "public"."Artikel"."createdAt", "public"."Artikel"."updatedAt" FROM "public"."Artikel" WHERE ("public"."Artikel"."status" = $1 AND "public"."Artikel"."showOnMainPortal" = $2) ORDER BY "public"."Artikel"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1,$2) OFFSET $3
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
 prisma:query SELECT "public"."SiteSetting"."id", "public"."SiteSetting"."key", "public"."SiteSetting"."value", "public"."SiteSetting"."isPublic", "public"."SiteSetting"."updatedAt" FROM "public"."SiteSetting" WHERE 1=1 OFFSET $1
+prisma:query SELECT "public"."DatasetPublik"."id", "public"."DatasetPublik"."indikatorId", "public"."DatasetPublik"."periodeId", "public"."DatasetPublik"."version", "public"."DatasetPublik"."status", "public"."DatasetPublik"."publishedAt", "public"."DatasetPublik"."notes" FROM "public"."DatasetPublik" WHERE "public"."DatasetPublik"."status" = $1 ORDER BY "public"."DatasetPublik"."publishedAt" DESC OFFSET $2
+prisma:query SELECT "public"."DatasetPublik"."id", "public"."DatasetPublik"."indikatorId", "public"."DatasetPublik"."periodeId", "public"."DatasetPublik"."version", "public"."DatasetPublik"."status", "public"."DatasetPublik"."publishedAt", "public"."DatasetPublik"."notes" FROM "public"."DatasetPublik" WHERE "public"."DatasetPublik"."status" = $1 ORDER BY "public"."DatasetPublik"."publishedAt" DESC LIMIT $2 OFFSET $3
+prisma:query COMMIT
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query SELECT "public"."Indikator"."id", "public"."Indikator"."kode", "public"."Indikator"."nama", "public"."Indikator"."deskripsi", "public"."Indikator"."satuanDefault", "public"."Indikator"."warna", "public"."Indikator"."isActive", "public"."Indikator"."sortOrder", "public"."Indikator"."createdAt", "public"."Indikator"."updatedAt" FROM "public"."Indikator" WHERE "public"."Indikator"."id" IN ($1,$2) OFFSET $3
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."KonfigurasiVisualisasi"."id", "public"."KonfigurasiVisualisasi"."indikatorId", "public"."KonfigurasiVisualisasi"."chartType", "public"."KonfigurasiVisualisasi"."aggregation", "public"."KonfigurasiVisualisasi"."satuan", "public"."KonfigurasiVisualisasi"."paletteKey", "public"."KonfigurasiVisualisasi"."decimalPlaces", "public"."KonfigurasiVisualisasi"."visibility", "public"."KonfigurasiVisualisasi"."configJson" FROM "public"."KonfigurasiVisualisasi" WHERE "public"."KonfigurasiVisualisasi"."indikatorId" IN ($1,$2) OFFSET $3
+prisma:query SELECT "public"."DatasetPublikDetail"."id", "public"."DatasetPublikDetail"."metricKey" FROM "public"."DatasetPublikDetail" WHERE "public"."DatasetPublikDetail"."datasetId" = $1 OFFSET $2
+prisma:query SELECT "public"."PertanyaanIndikator"."id", "public"."PertanyaanIndikator"."aspekId", "public"."PertanyaanIndikator"."kode", "public"."PertanyaanIndikator"."pertanyaan", "public"."PertanyaanIndikator"."tipeJawaban", "public"."PertanyaanIndikator"."wajibDefault", "public"."PertanyaanIndikator"."dimensiWilayah", "public"."PertanyaanIndikator"."satuan", "public"."PertanyaanIndikator"."helpText", "public"."PertanyaanIndikator"."sortOrder", "public"."PertanyaanIndikator"."isActive" FROM "public"."PertanyaanIndikator" WHERE "public"."PertanyaanIndikator"."kode" IN ($1,$2,$3) OFFSET $4
+prisma:query COMMIT
+prisma:query SELECT "public"."PeriodePengisian"."id", "public"."PeriodePengisian"."kode", "public"."PeriodePengisian"."nama", "public"."PeriodePengisian"."startDate", "public"."PeriodePengisian"."endDate", "public"."PeriodePengisian"."status", "public"."PeriodePengisian"."lockAt", "public"."PeriodePengisian"."createdBy", "public"."PeriodePengisian"."createdAt", "public"."PeriodePengisian"."updatedAt" FROM "public"."PeriodePengisian" WHERE "public"."PeriodePengisian"."id" IN ($1) OFFSET $2
+prisma:query BEGIN
+prisma:query COMMIT
+prisma:query COMMIT
+prisma:query DEALLOCATE ALL
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."Wilayah"."id", "public"."Wilayah"."kodeBps", "public"."Wilayah"."nama", "public"."Wilayah"."jenis", "public"."Wilayah"."geometry", "public"."Wilayah"."centroidLat", "public"."Wilayah"."centroidLng", "public"."Wilayah"."isActive" FROM "public"."Wilayah" WHERE "public"."Wilayah"."isActive" = $1 ORDER BY "public"."Wilayah"."kodeBps" ASC OFFSET $2
+prisma:query COMMIT
+prisma:query SELECT "public"."DatasetPublikDetail"."id", "public"."DatasetPublikDetail"."datasetId", "public"."DatasetPublikDetail"."opdId", "public"."DatasetPublikDetail"."wilayahId", "public"."DatasetPublikDetail"."metricKey", "public"."DatasetPublikDetail"."metricValue", "public"."DatasetPublikDetail"."metricText" FROM "public"."DatasetPublikDetail" WHERE ("public"."DatasetPublikDetail"."datasetId" = $1 AND "public"."DatasetPublikDetail"."metricKey" = $2) OFFSET $3
+prisma:query BEGIN
 prisma:query SELECT "public"."SiteSetting"."id", "public"."SiteSetting"."key", "public"."SiteSetting"."value", "public"."SiteSetting"."isPublic", "public"."SiteSetting"."updatedAt" FROM "public"."SiteSetting" WHERE 1=1 OFFSET $1
-prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."DatasetPublik"."id" FROM "public"."DatasetPublik" WHERE "public"."DatasetPublik"."status" = $1 OFFSET $2) AS "sub"
-prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."Wilayah"."id" FROM "public"."Wilayah" WHERE "public"."Wilayah"."isActive" = $1 OFFSET $2) AS "sub"
-prisma:query SELECT "public"."Publikasi"."id", "public"."Publikasi"."opdId", "public"."Publikasi"."judul", "public"."Publikasi"."slug", "public"."Publikasi"."deskripsi", "public"."Publikasi"."tahun", "public"."Publikasi"."jenisFile", "public"."Publikasi"."status", "public"."Publikasi"."visibility", "public"."Publikasi"."downloadCount", "public"."Publikasi"."publishedAt", "public"."Publikasi"."createdBy", "public"."Publikasi"."createdAt", "public"."Publikasi"."updatedAt" FROM "public"."Publikasi" WHERE ("public"."Publikasi"."status" = $1 AND "public"."Publikasi"."visibility" = $2) ORDER BY "public"."Publikasi"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1,$2,$3) OFFSET $4
-prisma:query SELECT "public"."Artikel"."id", "public"."Artikel"."opdId", "public"."Artikel"."judul", "public"."Artikel"."slug", "public"."Artikel"."ringkasan", "public"."Artikel"."isi", "public"."Artikel"."thumbnailEmoji", "public"."Artikel"."thumbnailUrl", "public"."Artikel"."status", "public"."Artikel"."featured", "public"."Artikel"."showOnMainPortal", "public"."Artikel"."publishedAt", "public"."Artikel"."createdBy", "public"."Artikel"."createdAt", "public"."Artikel"."updatedAt" FROM "public"."Artikel" WHERE ("public"."Artikel"."status" = $1 AND "public"."Artikel"."featured" = $2) ORDER BY "public"."Artikel"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."status" = $1 ORDER BY "public"."Opd"."sortOrder" ASC OFFSET $2
-prisma:query SELECT "public"."OpdProfile"."id", "public"."OpdProfile"."opdId", "public"."OpdProfile"."logoEmoji", "public"."OpdProfile"."warnaTema", "public"."OpdProfile"."deskripsi", "public"."OpdProfile"."visi", "public"."OpdProfile"."misi", "public"."OpdProfile"."alamat", "public"."OpdProfile"."telepon", "public"."OpdProfile"."emailPublic", "public"."OpdProfile"."heroRingkasan", "public"."OpdProfile"."updatedAt" FROM "public"."OpdProfile" WHERE "public"."OpdProfile"."opdId" IN ($1,$2,$3,$4,$5,$6,$7,$8) OFFSET $9
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."status" = $1 ORDER BY "public"."Opd"."sortOrder" ASC OFFSET $2
+prisma:query COMMIT
+prisma:query COMMIT
+prisma:query DEALLOCATE ALL
 prisma:query SELECT "public"."SiteSetting"."id", "public"."SiteSetting"."key", "public"."SiteSetting"."value", "public"."SiteSetting"."isPublic", "public"."SiteSetting"."updatedAt" FROM "public"."SiteSetting" WHERE 1=1 OFFSET $1
-prisma:query SELECT "public"."OpdProfile"."id", "public"."OpdProfile"."opdId", "public"."OpdProfile"."logoEmoji", "public"."OpdProfile"."warnaTema", "public"."OpdProfile"."deskripsi", "public"."OpdProfile"."visi", "public"."OpdProfile"."misi", "public"."OpdProfile"."alamat", "public"."OpdProfile"."telepon", "public"."OpdProfile"."emailPublic", "public"."OpdProfile"."heroRingkasan", "public"."OpdProfile"."updatedAt" FROM "public"."OpdProfile" WHERE "public"."OpdProfile"."opdId" IN ($1,$2,$3,$4,$5,$6,$7,$8) OFFSET $9
-prisma:query SELECT "public"."Artikel"."id", "public"."Artikel"."opdId", "public"."Artikel"."judul", "public"."Artikel"."slug", "public"."Artikel"."ringkasan", "public"."Artikel"."isi", "public"."Artikel"."thumbnailEmoji", "public"."Artikel"."thumbnailUrl", "public"."Artikel"."status", "public"."Artikel"."featured", "public"."Artikel"."showOnMainPortal", "public"."Artikel"."publishedAt", "public"."Artikel"."createdBy", "public"."Artikel"."createdAt", "public"."Artikel"."updatedAt" FROM "public"."Artikel" WHERE ("public"."Artikel"."status" = $1 AND "public"."Artikel"."featured" = $2) ORDER BY "public"."Artikel"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."Artikel"."id", "public"."Artikel"."opdId", "public"."Artikel"."judul", "public"."Artikel"."slug", "public"."Artikel"."ringkasan", "public"."Artikel"."isi", "public"."Artikel"."thumbnailEmoji", "public"."Artikel"."thumbnailUrl", "public"."Artikel"."status", "public"."Artikel"."featured", "public"."Artikel"."showOnMainPortal", "public"."Artikel"."publishedAt", "public"."Artikel"."createdBy", "public"."Artikel"."createdAt", "public"."Artikel"."updatedAt" FROM "public"."Artikel" WHERE ("public"."Artikel"."status" = $1 AND "public"."Artikel"."showOnMainPortal" = $2) ORDER BY "public"."Artikel"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."Publikasi"."id", "public"."Publikasi"."opdId", "public"."Publikasi"."judul", "public"."Publikasi"."slug", "public"."Publikasi"."deskripsi", "public"."Publikasi"."tahun", "public"."Publikasi"."jenisFile", "public"."Publikasi"."status", "public"."Publikasi"."visibility", "public"."Publikasi"."downloadCount", "public"."Publikasi"."publishedAt", "public"."Publikasi"."createdBy", "public"."Publikasi"."createdAt", "public"."Publikasi"."updatedAt" FROM "public"."Publikasi" WHERE ("public"."Publikasi"."status" = $1 AND "public"."Publikasi"."visibility" = $2) ORDER BY "public"."Publikasi"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1,$2) OFFSET $3
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1,$2,$3) OFFSET $4
-prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."Wilayah"."id" FROM "public"."Wilayah" WHERE "public"."Wilayah"."isActive" = $1 OFFSET $2) AS "sub"
-prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."DatasetPublik"."id" FROM "public"."DatasetPublik" WHERE "public"."DatasetPublik"."status" = $1 OFFSET $2) AS "sub"
-prisma:query SELECT "public"."SiteSetting"."id", "public"."SiteSetting"."key", "public"."SiteSetting"."value", "public"."SiteSetting"."isPublic", "public"."SiteSetting"."updatedAt" FROM "public"."SiteSetting" WHERE 1=1 OFFSET $1
-prisma:query SELECT "public"."SiteSetting"."id", "public"."SiteSetting"."key", "public"."SiteSetting"."value", "public"."SiteSetting"."isPublic", "public"."SiteSetting"."updatedAt" FROM "public"."SiteSetting" WHERE 1=1 OFFSET $1
-prisma:query SELECT "public"."SiteSetting"."id", "public"."SiteSetting"."key", "public"."SiteSetting"."value", "public"."SiteSetting"."isPublic", "public"."SiteSetting"."updatedAt" FROM "public"."SiteSetting" WHERE 1=1 OFFSET $1
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."status" = $1 ORDER BY "public"."Opd"."sortOrder" ASC OFFSET $2
-prisma:query SELECT "public"."Artikel"."id", "public"."Artikel"."opdId", "public"."Artikel"."judul", "public"."Artikel"."slug", "public"."Artikel"."ringkasan", "public"."Artikel"."isi", "public"."Artikel"."thumbnailEmoji", "public"."Artikel"."thumbnailUrl", "public"."Artikel"."status", "public"."Artikel"."featured", "public"."Artikel"."showOnMainPortal", "public"."Artikel"."publishedAt", "public"."Artikel"."createdBy", "public"."Artikel"."createdAt", "public"."Artikel"."updatedAt" FROM "public"."Artikel" WHERE ("public"."Artikel"."status" = $1 AND "public"."Artikel"."featured" = $2) ORDER BY "public"."Artikel"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."Publikasi"."id", "public"."Publikasi"."opdId", "public"."Publikasi"."judul", "public"."Publikasi"."slug", "public"."Publikasi"."deskripsi", "public"."Publikasi"."tahun", "public"."Publikasi"."jenisFile", "public"."Publikasi"."status", "public"."Publikasi"."visibility", "public"."Publikasi"."downloadCount", "public"."Publikasi"."publishedAt", "public"."Publikasi"."createdBy", "public"."Publikasi"."createdAt", "public"."Publikasi"."updatedAt" FROM "public"."Publikasi" WHERE ("public"."Publikasi"."status" = $1 AND "public"."Publikasi"."visibility" = $2) ORDER BY "public"."Publikasi"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1,$2,$3) OFFSET $4
-prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."Wilayah"."id" FROM "public"."Wilayah" WHERE "public"."Wilayah"."isActive" = $1 OFFSET $2) AS "sub"
-prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."DatasetPublik"."id" FROM "public"."DatasetPublik" WHERE "public"."DatasetPublik"."status" = $1 OFFSET $2) AS "sub"
-prisma:query SELECT "public"."OpdProfile"."id", "public"."OpdProfile"."opdId", "public"."OpdProfile"."logoEmoji", "public"."OpdProfile"."warnaTema", "public"."OpdProfile"."deskripsi", "public"."OpdProfile"."visi", "public"."OpdProfile"."misi", "public"."OpdProfile"."alamat", "public"."OpdProfile"."telepon", "public"."OpdProfile"."emailPublic", "public"."OpdProfile"."heroRingkasan", "public"."OpdProfile"."updatedAt" FROM "public"."OpdProfile" WHERE "public"."OpdProfile"."opdId" IN ($1,$2,$3,$4,$5,$6,$7,$8) OFFSET $9
-prisma:query SELECT "public"."Artikel"."id", "public"."Artikel"."opdId", "public"."Artikel"."judul", "public"."Artikel"."slug", "public"."Artikel"."ringkasan", "public"."Artikel"."isi", "public"."Artikel"."thumbnailEmoji", "public"."Artikel"."thumbnailUrl", "public"."Artikel"."status", "public"."Artikel"."featured", "public"."Artikel"."showOnMainPortal", "public"."Artikel"."publishedAt", "public"."Artikel"."createdBy", "public"."Artikel"."createdAt", "public"."Artikel"."updatedAt" FROM "public"."Artikel" WHERE ("public"."Artikel"."status" = $1 AND "public"."Artikel"."showOnMainPortal" = $2) ORDER BY "public"."Artikel"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1,$2) OFFSET $3
- GET / 200 in 12.6s (next.js: 43ms, application-code: 12.5s)
- GET / 200 in 23.5s (next.js: 9.6s, application-code: 13.9s)
- GET / 200 in 7.3s (next.js: 5.9s, application-code: 1383ms)
- GET / 200 in 9.5s (next.js: 120ms, application-code: 9.4s)
- GET / 200 in 9.0s (next.js: 79ms, application-code: 9.0s)
-⚠ Found a change in next.config.ts. Restarting the server to apply the changes...
-▲ Next.js 16.3.3 (Turbopack)
-- Local:         http://localhost:3000
-- Network:       http://192.168.56.1:3000
-- Environments: .env
-✓ Ready in 2.4s
-✓ Running next.config.ts took 418ms
-- Experiments (use with caution):
-  · serverActions
-
-○ Compiling / ...
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."status" = $1 ORDER BY "public"."Opd"."sortOrder" ASC OFFSET $2
-prisma:query SELECT "public"."OpdProfile"."id", "public"."OpdProfile"."opdId", "public"."OpdProfile"."logoEmoji", "public"."OpdProfile"."warnaTema", "public"."OpdProfile"."deskripsi", "public"."OpdProfile"."visi", "public"."OpdProfile"."misi", "public"."OpdProfile"."alamat", "public"."OpdProfile"."telepon", "public"."OpdProfile"."emailPublic", "public"."OpdProfile"."heroRingkasan", "public"."OpdProfile"."updatedAt" FROM "public"."OpdProfile" WHERE "public"."OpdProfile"."opdId" IN ($1,$2,$3,$4,$5,$6,$7,$8) OFFSET $9
-prisma:query SELECT "public"."Publikasi"."id", "public"."Publikasi"."opdId", "public"."Publikasi"."judul", "public"."Publikasi"."slug", "public"."Publikasi"."deskripsi", "public"."Publikasi"."tahun", "public"."Publikasi"."jenisFile", "public"."Publikasi"."status", "public"."Publikasi"."visibility", "public"."Publikasi"."downloadCount", "public"."Publikasi"."publishedAt", "public"."Publikasi"."createdBy", "public"."Publikasi"."createdAt", "public"."Publikasi"."updatedAt" FROM "public"."Publikasi" WHERE ("public"."Publikasi"."status" = $1 AND "public"."Publikasi"."visibility" = $2) ORDER BY "public"."Publikasi"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1,$2,$3) OFFSET $4
-prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."DatasetPublik"."id" FROM "public"."DatasetPublik" WHERE "public"."DatasetPublik"."status" = $1 OFFSET $2) AS "sub"
-prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."Wilayah"."id" FROM "public"."Wilayah" WHERE "public"."Wilayah"."isActive" = $1 OFFSET $2) AS "sub"
-prisma:query SELECT "public"."SiteSetting"."id", "public"."SiteSetting"."key", "public"."SiteSetting"."value", "public"."SiteSetting"."isPublic", "public"."SiteSetting"."updatedAt" FROM "public"."SiteSetting" WHERE 1=1 OFFSET $1
-prisma:query SELECT "public"."Artikel"."id", "public"."Artikel"."opdId", "public"."Artikel"."judul", "public"."Artikel"."slug", "public"."Artikel"."ringkasan", "public"."Artikel"."isi", "public"."Artikel"."thumbnailEmoji", "public"."Artikel"."thumbnailUrl", "public"."Artikel"."status", "public"."Artikel"."featured", "public"."Artikel"."showOnMainPortal", "public"."Artikel"."publishedAt", "public"."Artikel"."createdBy", "public"."Artikel"."createdAt", "public"."Artikel"."updatedAt" FROM "public"."Artikel" WHERE ("public"."Artikel"."status" = $1 AND "public"."Artikel"."showOnMainPortal" = $2) ORDER BY "public"."Artikel"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."Artikel"."id", "public"."Artikel"."opdId", "public"."Artikel"."judul", "public"."Artikel"."slug", "public"."Artikel"."ringkasan", "public"."Artikel"."isi", "public"."Artikel"."thumbnailEmoji", "public"."Artikel"."thumbnailUrl", "public"."Artikel"."status", "public"."Artikel"."featured", "public"."Artikel"."showOnMainPortal", "public"."Artikel"."publishedAt", "public"."Artikel"."createdBy", "public"."Artikel"."createdAt", "public"."Artikel"."updatedAt" FROM "public"."Artikel" WHERE ("public"."Artikel"."status" = $1 AND "public"."Artikel"."featured" = $2) ORDER BY "public"."Artikel"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1,$2) OFFSET $3
-prisma:query SELECT "public"."SiteSetting"."id", "public"."SiteSetting"."key", "public"."SiteSetting"."value", "public"."SiteSetting"."isPublic", "public"."SiteSetting"."updatedAt" FROM "public"."SiteSetting" WHERE 1=1 OFFSET $1
- GET / 200 in 12.3s (next.js: 7.2s, application-code: 5.1s)
-  Reload env: .env
-✓ Compiled in 5.1s
-✓ Finished filesystem cache database compaction in 11.7s
-prisma:query SELECT "public"."SiteSetting"."id", "public"."SiteSetting"."key", "public"."SiteSetting"."value", "public"."SiteSetting"."isPublic", "public"."SiteSetting"."updatedAt" FROM "public"."SiteSetting" WHERE 1=1 OFFSET $1
-prisma:query SELECT "public"."Publikasi"."id", "public"."Publikasi"."opdId", "public"."Publikasi"."judul", "public"."Publikasi"."slug", "public"."Publikasi"."deskripsi", "public"."Publikasi"."tahun", "public"."Publikasi"."jenisFile", "public"."Publikasi"."status", "public"."Publikasi"."visibility", "public"."Publikasi"."downloadCount", "public"."Publikasi"."publishedAt", "public"."Publikasi"."createdBy", "public"."Publikasi"."createdAt", "public"."Publikasi"."updatedAt" FROM "public"."Publikasi" WHERE ("public"."Publikasi"."status" = $1 AND "public"."Publikasi"."visibility" = $2) ORDER BY "public"."Publikasi"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1,$2,$3) OFFSET $4
-prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."Wilayah"."id" FROM "public"."Wilayah" WHERE "public"."Wilayah"."isActive" = $1 OFFSET $2) AS "sub"
-prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."DatasetPublik"."id" FROM "public"."DatasetPublik" WHERE "public"."DatasetPublik"."status" = $1 OFFSET $2) AS "sub"
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."status" = $1 ORDER BY "public"."Opd"."sortOrder" ASC OFFSET $2
-prisma:query SELECT "public"."OpdProfile"."id", "public"."OpdProfile"."opdId", "public"."OpdProfile"."logoEmoji", "public"."OpdProfile"."warnaTema", "public"."OpdProfile"."deskripsi", "public"."OpdProfile"."visi", "public"."OpdProfile"."misi", "public"."OpdProfile"."alamat", "public"."OpdProfile"."telepon", "public"."OpdProfile"."emailPublic", "public"."OpdProfile"."heroRingkasan", "public"."OpdProfile"."updatedAt" FROM "public"."OpdProfile" WHERE "public"."OpdProfile"."opdId" IN ($1,$2,$3,$4,$5,$6,$7,$8) OFFSET $9
-prisma:query SELECT "public"."Artikel"."id", "public"."Artikel"."opdId", "public"."Artikel"."judul", "public"."Artikel"."slug", "public"."Artikel"."ringkasan", "public"."Artikel"."isi", "public"."Artikel"."thumbnailEmoji", "public"."Artikel"."thumbnailUrl", "public"."Artikel"."status", "public"."Artikel"."featured", "public"."Artikel"."showOnMainPortal", "public"."Artikel"."publishedAt", "public"."Artikel"."createdBy", "public"."Artikel"."createdAt", "public"."Artikel"."updatedAt" FROM "public"."Artikel" WHERE ("public"."Artikel"."status" = $1 AND "public"."Artikel"."featured" = $2) ORDER BY "public"."Artikel"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."Artikel"."id", "public"."Artikel"."opdId", "public"."Artikel"."judul", "public"."Artikel"."slug", "public"."Artikel"."ringkasan", "public"."Artikel"."isi", "public"."Artikel"."thumbnailEmoji", "public"."Artikel"."thumbnailUrl", "public"."Artikel"."status", "public"."Artikel"."featured", "public"."Artikel"."showOnMainPortal", "public"."Artikel"."publishedAt", "public"."Artikel"."createdBy", "public"."Artikel"."createdAt", "public"."Artikel"."updatedAt" FROM "public"."Artikel" WHERE ("public"."Artikel"."status" = $1 AND "public"."Artikel"."showOnMainPortal" = $2) ORDER BY "public"."Artikel"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1,$2) OFFSET $3
-prisma:query SELECT "public"."SiteSetting"."id", "public"."SiteSetting"."key", "public"."SiteSetting"."value", "public"."SiteSetting"."isPublic", "public"."SiteSetting"."updatedAt" FROM "public"."SiteSetting" WHERE 1=1 OFFSET $1
- GET / 200 in 6.5s (next.js: 4.1s, application-code: 2.4s)
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."DatasetPublik"."id", "public"."DatasetPublik"."indikatorId", "public"."DatasetPublik"."periodeId", "public"."DatasetPublik"."version", "public"."DatasetPublik"."status", "public"."DatasetPublik"."publishedAt", "public"."DatasetPublik"."notes" FROM "public"."DatasetPublik" WHERE "public"."DatasetPublik"."status" = $1 ORDER BY "public"."DatasetPublik"."publishedAt" DESC LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."DatasetPublik"."id", "public"."DatasetPublik"."indikatorId", "public"."DatasetPublik"."periodeId", "public"."DatasetPublik"."version", "public"."DatasetPublik"."status", "public"."DatasetPublik"."publishedAt", "public"."DatasetPublik"."notes" FROM "public"."DatasetPublik" WHERE "public"."DatasetPublik"."status" = $1 ORDER BY "public"."DatasetPublik"."publishedAt" DESC LIMIT $2 OFFSET $3
+prisma:query COMMIT
+prisma:query COMMIT
+ GET /data 200 in 17.6s (next.js: 7.6s, application-code: 10.0s)
+ GET /data 200 in 9.0s (next.js: 379ms, application-code: 8.6s)
+ GET /data 200 in 9.1s (next.js: 300ms, application-code: 8.8s)
+(node:20704) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 drain listeners added to [Gzip]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+ GET /data 200 in 2.3s (next.js: 508ms, application-code: 1789ms)
+Pencatatan kunjungan gagal TypeError: Cannot read properties of undefined (reading 'createMany')
+    at POST (src\app\api\public\pengunjung\route.ts:30:27)
+  28 |   try {
+  29 |     // A repeated request with the same event ID must never inflate the count.
+> 30 |     await db.websiteVisit.createMany({ data: [parsed.data], skipDuplicates: true });
+     |                           ^
+  31 |     return NextResponse.json({ ok: true }, { headers: noCache });
+  32 |   } catch (error) {
+  33 |     console.error("Pencatatan kunjungan gagal", error);
+ POST /api/public/pengunjung 503 in 5.9s (next.js: 3.4s, application-code: 2.5s)
+Pencatatan kunjungan gagal TypeError: Cannot read properties of undefined (reading 'createMany')
+    at POST (src\app\api\public\pengunjung\route.ts:30:27)
+  28 |   try {
+  29 |     // A repeated request with the same event ID must never inflate the count.
+> 30 |     await db.websiteVisit.createMany({ data: [parsed.data], skipDuplicates: true });
+     |                           ^
+  31 |     return NextResponse.json({ ok: true }, { headers: noCache });
+  32 |   } catch (error) {
+  33 |     console.error("Pencatatan kunjungan gagal", error);
+ POST /api/public/pengunjung 503 in 143ms (next.js: 35ms, application-code: 108ms)
+(node:20704) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 drain listeners added to [Gzip]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+ GET /data 200 in 1303ms (next.js: 92ms, application-code: 1211ms)
+✓ Compiled in 22.2s
+✓ Finished writing to filesystem cache in 12.0s
 ⚠ Fast Refresh had to perform a full reload when ./node_modules/next/dist/client/image-component.js changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
-prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."Wilayah"."id" FROM "public"."Wilayah" WHERE "public"."Wilayah"."isActive" = $1 OFFSET $2) AS "sub"
-prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."DatasetPublik"."id" FROM "public"."DatasetPublik" WHERE "public"."DatasetPublik"."status" = $1 OFFSET $2) AS "sub"
-prisma:query SELECT "public"."SiteSetting"."id", "public"."SiteSetting"."key", "public"."SiteSetting"."value", "public"."SiteSetting"."isPublic", "public"."SiteSetting"."updatedAt" FROM "public"."SiteSetting" WHERE 1=1 OFFSET $1
-prisma:query SELECT "public"."Publikasi"."id", "public"."Publikasi"."opdId", "public"."Publikasi"."judul", "public"."Publikasi"."slug", "public"."Publikasi"."deskripsi", "public"."Publikasi"."tahun", "public"."Publikasi"."jenisFile", "public"."Publikasi"."status", "public"."Publikasi"."visibility", "public"."Publikasi"."downloadCount", "public"."Publikasi"."publishedAt", "public"."Publikasi"."createdBy", "public"."Publikasi"."createdAt", "public"."Publikasi"."updatedAt" FROM "public"."Publikasi" WHERE ("public"."Publikasi"."status" = $1 AND "public"."Publikasi"."visibility" = $2) ORDER BY "public"."Publikasi"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."Artikel"."id", "public"."Artikel"."opdId", "public"."Artikel"."judul", "public"."Artikel"."slug", "public"."Artikel"."ringkasan", "public"."Artikel"."isi", "public"."Artikel"."thumbnailEmoji", "public"."Artikel"."thumbnailUrl", "public"."Artikel"."status", "public"."Artikel"."featured", "public"."Artikel"."showOnMainPortal", "public"."Artikel"."publishedAt", "public"."Artikel"."createdBy", "public"."Artikel"."createdAt", "public"."Artikel"."updatedAt" FROM "public"."Artikel" WHERE ("public"."Artikel"."status" = $1 AND "public"."Artikel"."showOnMainPortal" = $2) ORDER BY "public"."Artikel"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1,$2) OFFSET $3
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1,$2,$3) OFFSET $4
-prisma:query SELECT "public"."Artikel"."id", "public"."Artikel"."opdId", "public"."Artikel"."judul", "public"."Artikel"."slug", "public"."Artikel"."ringkasan", "public"."Artikel"."isi", "public"."Artikel"."thumbnailEmoji", "public"."Artikel"."thumbnailUrl", "public"."Artikel"."status", "public"."Artikel"."featured", "public"."Artikel"."showOnMainPortal", "public"."Artikel"."publishedAt", "public"."Artikel"."createdBy", "public"."Artikel"."createdAt", "public"."Artikel"."updatedAt" FROM "public"."Artikel" WHERE ("public"."Artikel"."status" = $1 AND "public"."Artikel"."featured" = $2) ORDER BY "public"."Artikel"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."SiteSetting"."id", "public"."SiteSetting"."key", "public"."SiteSetting"."value", "public"."SiteSetting"."isPublic", "public"."SiteSetting"."updatedAt" FROM "public"."SiteSetting" WHERE 1=1 OFFSET $1
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."status" = $1 ORDER BY "public"."Opd"."sortOrder" ASC OFFSET $2
-prisma:query SELECT "public"."OpdProfile"."id", "public"."OpdProfile"."opdId", "public"."OpdProfile"."logoEmoji", "public"."OpdProfile"."warnaTema", "public"."OpdProfile"."deskripsi", "public"."OpdProfile"."visi", "public"."OpdProfile"."misi", "public"."OpdProfile"."alamat", "public"."OpdProfile"."telepon", "public"."OpdProfile"."emailPublic", "public"."OpdProfile"."heroRingkasan", "public"."OpdProfile"."updatedAt" FROM "public"."OpdProfile" WHERE "public"."OpdProfile"."opdId" IN ($1,$2,$3,$4,$5,$6,$7,$8) OFFSET $9
-prisma:query SELECT "public"."SiteSetting"."id", "public"."SiteSetting"."key", "public"."SiteSetting"."value", "public"."SiteSetting"."isPublic", "public"."SiteSetting"."updatedAt" FROM "public"."SiteSetting" WHERE 1=1 OFFSET $1
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."status" = $1 ORDER BY "public"."Opd"."sortOrder" ASC OFFSET $2
-prisma:query SELECT "public"."OpdProfile"."id", "public"."OpdProfile"."opdId", "public"."OpdProfile"."logoEmoji", "public"."OpdProfile"."warnaTema", "public"."OpdProfile"."deskripsi", "public"."OpdProfile"."visi", "public"."OpdProfile"."misi", "public"."OpdProfile"."alamat", "public"."OpdProfile"."telepon", "public"."OpdProfile"."emailPublic", "public"."OpdProfile"."heroRingkasan", "public"."OpdProfile"."updatedAt" FROM "public"."OpdProfile" WHERE "public"."OpdProfile"."opdId" IN ($1,$2,$3,$4,$5,$6,$7,$8) OFFSET $9
-prisma:query SELECT "public"."SiteSetting"."id", "public"."SiteSetting"."key", "public"."SiteSetting"."value", "public"."SiteSetting"."isPublic", "public"."SiteSetting"."updatedAt" FROM "public"."SiteSetting" WHERE 1=1 OFFSET $1
-prisma:query SELECT "public"."Artikel"."id", "public"."Artikel"."opdId", "public"."Artikel"."judul", "public"."Artikel"."slug", "public"."Artikel"."ringkasan", "public"."Artikel"."isi", "public"."Artikel"."thumbnailEmoji", "public"."Artikel"."thumbnailUrl", "public"."Artikel"."status", "public"."Artikel"."featured", "public"."Artikel"."showOnMainPortal", "public"."Artikel"."publishedAt", "public"."Artikel"."createdBy", "public"."Artikel"."createdAt", "public"."Artikel"."updatedAt" FROM "public"."Artikel" WHERE ("public"."Artikel"."status" = $1 AND "public"."Artikel"."featured" = $2) ORDER BY "public"."Artikel"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."DatasetPublik"."id" FROM "public"."DatasetPublik" WHERE "public"."DatasetPublik"."status" = $1 OFFSET $2) AS "sub"
-prisma:query SELECT "public"."Publikasi"."id", "public"."Publikasi"."opdId", "public"."Publikasi"."judul", "public"."Publikasi"."slug", "public"."Publikasi"."deskripsi", "public"."Publikasi"."tahun", "public"."Publikasi"."jenisFile", "public"."Publikasi"."status", "public"."Publikasi"."visibility", "public"."Publikasi"."downloadCount", "public"."Publikasi"."publishedAt", "public"."Publikasi"."createdBy", "public"."Publikasi"."createdAt", "public"."Publikasi"."updatedAt" FROM "public"."Publikasi" WHERE ("public"."Publikasi"."status" = $1 AND "public"."Publikasi"."visibility" = $2) ORDER BY "public"."Publikasi"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."Artikel"."id", "public"."Artikel"."opdId", "public"."Artikel"."judul", "public"."Artikel"."slug", "public"."Artikel"."ringkasan", "public"."Artikel"."isi", "public"."Artikel"."thumbnailEmoji", "public"."Artikel"."thumbnailUrl", "public"."Artikel"."status", "public"."Artikel"."featured", "public"."Artikel"."showOnMainPortal", "public"."Artikel"."publishedAt", "public"."Artikel"."createdBy", "public"."Artikel"."createdAt", "public"."Artikel"."updatedAt" FROM "public"."Artikel" WHERE ("public"."Artikel"."status" = $1 AND "public"."Artikel"."showOnMainPortal" = $2) ORDER BY "public"."Artikel"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1,$2) OFFSET $3
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1,$2,$3) OFFSET $4
-prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."Wilayah"."id" FROM "public"."Wilayah" WHERE "public"."Wilayah"."isActive" = $1 OFFSET $2) AS "sub"
- GET / 200 in 2.9s (next.js: 106ms, application-code: 2.8s)
- GET / 200 in 2.9s (next.js: 97ms, application-code: 2.8s)
-  Reload env: .env
-✓ Compiled in 3.2s
-prisma:query SELECT "public"."Artikel"."id", "public"."Artikel"."opdId", "public"."Artikel"."judul", "public"."Artikel"."slug", "public"."Artikel"."ringkasan", "public"."Artikel"."isi", "public"."Artikel"."thumbnailEmoji", "public"."Artikel"."thumbnailUrl", "public"."Artikel"."status", "public"."Artikel"."featured", "public"."Artikel"."showOnMainPortal", "public"."Artikel"."publishedAt", "public"."Artikel"."createdBy", "public"."Artikel"."createdAt", "public"."Artikel"."updatedAt" FROM "public"."Artikel" WHERE ("public"."Artikel"."status" = $1 AND "public"."Artikel"."featured" = $2) ORDER BY "public"."Artikel"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."SiteSetting"."id", "public"."SiteSetting"."key", "public"."SiteSetting"."value", "public"."SiteSetting"."isPublic", "public"."SiteSetting"."updatedAt" FROM "public"."SiteSetting" WHERE 1=1 OFFSET $1
-prisma:query SELECT "public"."Artikel"."id", "public"."Artikel"."opdId", "public"."Artikel"."judul", "public"."Artikel"."slug", "public"."Artikel"."ringkasan", "public"."Artikel"."isi", "public"."Artikel"."thumbnailEmoji", "public"."Artikel"."thumbnailUrl", "public"."Artikel"."status", "public"."Artikel"."featured", "public"."Artikel"."showOnMainPortal", "public"."Artikel"."publishedAt", "public"."Artikel"."createdBy", "public"."Artikel"."createdAt", "public"."Artikel"."updatedAt" FROM "public"."Artikel" WHERE ("public"."Artikel"."status" = $1 AND "public"."Artikel"."showOnMainPortal" = $2) ORDER BY "public"."Artikel"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."Wilayah"."id" FROM "public"."Wilayah" WHERE "public"."Wilayah"."isActive" = $1 OFFSET $2) AS "sub"
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."status" = $1 ORDER BY "public"."Opd"."sortOrder" ASC OFFSET $2
-prisma:query SELECT "public"."Publikasi"."id", "public"."Publikasi"."opdId", "public"."Publikasi"."judul", "public"."Publikasi"."slug", "public"."Publikasi"."deskripsi", "public"."Publikasi"."tahun", "public"."Publikasi"."jenisFile", "public"."Publikasi"."status", "public"."Publikasi"."visibility", "public"."Publikasi"."downloadCount", "public"."Publikasi"."publishedAt", "public"."Publikasi"."createdBy", "public"."Publikasi"."createdAt", "public"."Publikasi"."updatedAt" FROM "public"."Publikasi" WHERE ("public"."Publikasi"."status" = $1 AND "public"."Publikasi"."visibility" = $2) ORDER BY "public"."Publikasi"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1,$2) OFFSET $3
-prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."DatasetPublik"."id" FROM "public"."DatasetPublik" WHERE "public"."DatasetPublik"."status" = $1 OFFSET $2) AS "sub"
-prisma:query SELECT "public"."OpdProfile"."id", "public"."OpdProfile"."opdId", "public"."OpdProfile"."logoEmoji", "public"."OpdProfile"."warnaTema", "public"."OpdProfile"."deskripsi", "public"."OpdProfile"."visi", "public"."OpdProfile"."misi", "public"."OpdProfile"."alamat", "public"."OpdProfile"."telepon", "public"."OpdProfile"."emailPublic", "public"."OpdProfile"."heroRingkasan", "public"."OpdProfile"."updatedAt" FROM "public"."OpdProfile" WHERE "public"."OpdProfile"."opdId" IN ($1,$2,$3,$4,$5,$6,$7,$8) OFFSET $9
-prisma:query SELECT "public"."SiteSetting"."id", "public"."SiteSetting"."key", "public"."SiteSetting"."value", "public"."SiteSetting"."isPublic", "public"."SiteSetting"."updatedAt" FROM "public"."SiteSetting" WHERE 1=1 OFFSET $1
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1,$2,$3) OFFSET $4
 ⚠ Fast Refresh had to perform a full reload when ./node_modules/next/dist/client/image-component.js changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+✓ Compiled in 17.7s
+prisma:query SELECT 1
+prisma:query BEGIN
+prisma:query SELECT 1
+prisma:query DEALLOCATE ALL
+prisma:query BEGIN
+prisma:query SELECT 1
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
 prisma:query SELECT "public"."SiteSetting"."id", "public"."SiteSetting"."key", "public"."SiteSetting"."value", "public"."SiteSetting"."isPublic", "public"."SiteSetting"."updatedAt" FROM "public"."SiteSetting" WHERE 1=1 OFFSET $1
+prisma:query DEALLOCATE ALL
+prisma:query COMMIT
+prisma:query SELECT "public"."DatasetPublik"."id", "public"."DatasetPublik"."indikatorId", "public"."DatasetPublik"."periodeId", "public"."DatasetPublik"."version", "public"."DatasetPublik"."status", "public"."DatasetPublik"."publishedAt", "public"."DatasetPublik"."notes" FROM "public"."DatasetPublik" WHERE "public"."DatasetPublik"."status" = $1 ORDER BY "public"."DatasetPublik"."publishedAt" DESC LIMIT $2 OFFSET $3
+prisma:query BEGIN
+prisma:query COMMIT
+prisma:query SELECT "public"."DatasetPublik"."id", "public"."DatasetPublik"."indikatorId", "public"."DatasetPublik"."periodeId", "public"."DatasetPublik"."version", "public"."DatasetPublik"."status", "public"."DatasetPublik"."publishedAt", "public"."DatasetPublik"."notes" FROM "public"."DatasetPublik" WHERE "public"."DatasetPublik"."status" = $1 ORDER BY "public"."DatasetPublik"."publishedAt" DESC OFFSET $2
+prisma:query DEALLOCATE ALL
+prisma:query BEGIN
+prisma:query SELECT "public"."Indikator"."id", "public"."Indikator"."kode", "public"."Indikator"."nama", "public"."Indikator"."deskripsi", "public"."Indikator"."satuanDefault", "public"."Indikator"."warna", "public"."Indikator"."isActive", "public"."Indikator"."sortOrder", "public"."Indikator"."createdAt", "public"."Indikator"."updatedAt" FROM "public"."Indikator" WHERE "public"."Indikator"."id" IN ($1,$2) OFFSET $3
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."DatasetPublikDetail"."id", "public"."DatasetPublikDetail"."metricKey" FROM "public"."DatasetPublikDetail" WHERE "public"."DatasetPublikDetail"."datasetId" = $1 OFFSET $2
+prisma:query SELECT "public"."KonfigurasiVisualisasi"."id", "public"."KonfigurasiVisualisasi"."indikatorId", "public"."KonfigurasiVisualisasi"."chartType", "public"."KonfigurasiVisualisasi"."aggregation", "public"."KonfigurasiVisualisasi"."satuan", "public"."KonfigurasiVisualisasi"."paletteKey", "public"."KonfigurasiVisualisasi"."decimalPlaces", "public"."KonfigurasiVisualisasi"."visibility", "public"."KonfigurasiVisualisasi"."configJson" FROM "public"."KonfigurasiVisualisasi" WHERE "public"."KonfigurasiVisualisasi"."indikatorId" IN ($1,$2) OFFSET $3
+prisma:query COMMIT
+prisma:query SELECT "public"."PertanyaanIndikator"."id", "public"."PertanyaanIndikator"."aspekId", "public"."PertanyaanIndikator"."kode", "public"."PertanyaanIndikator"."pertanyaan", "public"."PertanyaanIndikator"."tipeJawaban", "public"."PertanyaanIndikator"."wajibDefault", "public"."PertanyaanIndikator"."dimensiWilayah", "public"."PertanyaanIndikator"."satuan", "public"."PertanyaanIndikator"."helpText", "public"."PertanyaanIndikator"."sortOrder", "public"."PertanyaanIndikator"."isActive" FROM "public"."PertanyaanIndikator" WHERE "public"."PertanyaanIndikator"."kode" IN ($1,$2,$3) OFFSET $4
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query SELECT "public"."PeriodePengisian"."id", "public"."PeriodePengisian"."kode", "public"."PeriodePengisian"."nama", "public"."PeriodePengisian"."startDate", "public"."PeriodePengisian"."endDate", "public"."PeriodePengisian"."status", "public"."PeriodePengisian"."lockAt", "public"."PeriodePengisian"."createdBy", "public"."PeriodePengisian"."createdAt", "public"."PeriodePengisian"."updatedAt" FROM "public"."PeriodePengisian" WHERE "public"."PeriodePengisian"."id" IN ($1) OFFSET $2
+prisma:query DEALLOCATE ALL
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query COMMIT
+prisma:query SELECT "public"."Wilayah"."id", "public"."Wilayah"."kodeBps", "public"."Wilayah"."nama", "public"."Wilayah"."jenis", "public"."Wilayah"."geometry", "public"."Wilayah"."centroidLat", "public"."Wilayah"."centroidLng", "public"."Wilayah"."isActive" FROM "public"."Wilayah" WHERE "public"."Wilayah"."isActive" = $1 ORDER BY "public"."Wilayah"."kodeBps" ASC OFFSET $2
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query COMMIT
+prisma:query SELECT "public"."DatasetPublikDetail"."id", "public"."DatasetPublikDetail"."datasetId", "public"."DatasetPublikDetail"."opdId", "public"."DatasetPublikDetail"."wilayahId", "public"."DatasetPublikDetail"."metricKey", "public"."DatasetPublikDetail"."metricValue", "public"."DatasetPublikDetail"."metricText" FROM "public"."DatasetPublikDetail" WHERE ("public"."DatasetPublikDetail"."datasetId" = $1 AND "public"."DatasetPublikDetail"."metricKey" = $2) OFFSET $3
+prisma:query COMMIT
 prisma:query SELECT "public"."SiteSetting"."id", "public"."SiteSetting"."key", "public"."SiteSetting"."value", "public"."SiteSetting"."isPublic", "public"."SiteSetting"."updatedAt" FROM "public"."SiteSetting" WHERE 1=1 OFFSET $1
-prisma:query SELECT "public"."Artikel"."id", "public"."Artikel"."opdId", "public"."Artikel"."judul", "public"."Artikel"."slug", "public"."Artikel"."ringkasan", "public"."Artikel"."isi", "public"."Artikel"."thumbnailEmoji", "public"."Artikel"."thumbnailUrl", "public"."Artikel"."status", "public"."Artikel"."featured", "public"."Artikel"."showOnMainPortal", "public"."Artikel"."publishedAt", "public"."Artikel"."createdBy", "public"."Artikel"."createdAt", "public"."Artikel"."updatedAt" FROM "public"."Artikel" WHERE ("public"."Artikel"."status" = $1 AND "public"."Artikel"."featured" = $2) ORDER BY "public"."Artikel"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."Publikasi"."id", "public"."Publikasi"."opdId", "public"."Publikasi"."judul", "public"."Publikasi"."slug", "public"."Publikasi"."deskripsi", "public"."Publikasi"."tahun", "public"."Publikasi"."jenisFile", "public"."Publikasi"."status", "public"."Publikasi"."visibility", "public"."Publikasi"."downloadCount", "public"."Publikasi"."publishedAt", "public"."Publikasi"."createdBy", "public"."Publikasi"."createdAt", "public"."Publikasi"."updatedAt" FROM "public"."Publikasi" WHERE ("public"."Publikasi"."status" = $1 AND "public"."Publikasi"."visibility" = $2) ORDER BY "public"."Publikasi"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1,$2,$3) OFFSET $4
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."status" = $1 ORDER BY "public"."Opd"."sortOrder" ASC OFFSET $2
-prisma:query SELECT "public"."Artikel"."id", "public"."Artikel"."opdId", "public"."Artikel"."judul", "public"."Artikel"."slug", "public"."Artikel"."ringkasan", "public"."Artikel"."isi", "public"."Artikel"."thumbnailEmoji", "public"."Artikel"."thumbnailUrl", "public"."Artikel"."status", "public"."Artikel"."featured", "public"."Artikel"."showOnMainPortal", "public"."Artikel"."publishedAt", "public"."Artikel"."createdBy", "public"."Artikel"."createdAt", "public"."Artikel"."updatedAt" FROM "public"."Artikel" WHERE ("public"."Artikel"."status" = $1 AND "public"."Artikel"."showOnMainPortal" = $2) ORDER BY "public"."Artikel"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1,$2) OFFSET $3
-prisma:query SELECT "public"."OpdProfile"."id", "public"."OpdProfile"."opdId", "public"."OpdProfile"."logoEmoji", "public"."OpdProfile"."warnaTema", "public"."OpdProfile"."deskripsi", "public"."OpdProfile"."visi", "public"."OpdProfile"."misi", "public"."OpdProfile"."alamat", "public"."OpdProfile"."telepon", "public"."OpdProfile"."emailPublic", "public"."OpdProfile"."heroRingkasan", "public"."OpdProfile"."updatedAt" FROM "public"."OpdProfile" WHERE "public"."OpdProfile"."opdId" IN ($1,$2,$3,$4,$5,$6,$7,$8) OFFSET $9
-prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."Wilayah"."id" FROM "public"."Wilayah" WHERE "public"."Wilayah"."isActive" = $1 OFFSET $2) AS "sub"
-prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."DatasetPublik"."id" FROM "public"."DatasetPublik" WHERE "public"."DatasetPublik"."status" = $1 OFFSET $2) AS "sub"
-prisma:query SELECT "public"."SiteSetting"."id", "public"."SiteSetting"."key", "public"."SiteSetting"."value", "public"."SiteSetting"."isPublic", "public"."SiteSetting"."updatedAt" FROM "public"."SiteSetting" WHERE 1=1 OFFSET $1
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."status" = $1 ORDER BY "public"."Opd"."sortOrder" ASC OFFSET $2
-prisma:query SELECT "public"."SiteSetting"."id", "public"."SiteSetting"."key", "public"."SiteSetting"."value", "public"."SiteSetting"."isPublic", "public"."SiteSetting"."updatedAt" FROM "public"."SiteSetting" WHERE 1=1 OFFSET $1
-prisma:query SELECT "public"."Artikel"."id", "public"."Artikel"."opdId", "public"."Artikel"."judul", "public"."Artikel"."slug", "public"."Artikel"."ringkasan", "public"."Artikel"."isi", "public"."Artikel"."thumbnailEmoji", "public"."Artikel"."thumbnailUrl", "public"."Artikel"."status", "public"."Artikel"."featured", "public"."Artikel"."showOnMainPortal", "public"."Artikel"."publishedAt", "public"."Artikel"."createdBy", "public"."Artikel"."createdAt", "public"."Artikel"."updatedAt" FROM "public"."Artikel" WHERE ("public"."Artikel"."status" = $1 AND "public"."Artikel"."featured" = $2) ORDER BY "public"."Artikel"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."Artikel"."id", "public"."Artikel"."opdId", "public"."Artikel"."judul", "public"."Artikel"."slug", "public"."Artikel"."ringkasan", "public"."Artikel"."isi", "public"."Artikel"."thumbnailEmoji", "public"."Artikel"."thumbnailUrl", "public"."Artikel"."status", "public"."Artikel"."featured", "public"."Artikel"."showOnMainPortal", "public"."Artikel"."publishedAt", "public"."Artikel"."createdBy", "public"."Artikel"."createdAt", "public"."Artikel"."updatedAt" FROM "public"."Artikel" WHERE ("public"."Artikel"."status" = $1 AND "public"."Artikel"."showOnMainPortal" = $2) ORDER BY "public"."Artikel"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."DatasetPublik"."id" FROM "public"."DatasetPublik" WHERE "public"."DatasetPublik"."status" = $1 OFFSET $2) AS "sub"
-prisma:query SELECT "public"."OpdProfile"."id", "public"."OpdProfile"."opdId", "public"."OpdProfile"."logoEmoji", "public"."OpdProfile"."warnaTema", "public"."OpdProfile"."deskripsi", "public"."OpdProfile"."visi", "public"."OpdProfile"."misi", "public"."OpdProfile"."alamat", "public"."OpdProfile"."telepon", "public"."OpdProfile"."emailPublic", "public"."OpdProfile"."heroRingkasan", "public"."OpdProfile"."updatedAt" FROM "public"."OpdProfile" WHERE "public"."OpdProfile"."opdId" IN ($1,$2,$3,$4,$5,$6,$7,$8) OFFSET $9
-prisma:query SELECT COUNT(*) AS "_count$_all" FROM (SELECT "public"."Wilayah"."id" FROM "public"."Wilayah" WHERE "public"."Wilayah"."isActive" = $1 OFFSET $2) AS "sub"
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1,$2) OFFSET $3
-prisma:query SELECT "public"."Publikasi"."id", "public"."Publikasi"."opdId", "public"."Publikasi"."judul", "public"."Publikasi"."slug", "public"."Publikasi"."deskripsi", "public"."Publikasi"."tahun", "public"."Publikasi"."jenisFile", "public"."Publikasi"."status", "public"."Publikasi"."visibility", "public"."Publikasi"."downloadCount", "public"."Publikasi"."publishedAt", "public"."Publikasi"."createdBy", "public"."Publikasi"."createdAt", "public"."Publikasi"."updatedAt" FROM "public"."Publikasi" WHERE ("public"."Publikasi"."status" = $1 AND "public"."Publikasi"."visibility" = $2) ORDER BY "public"."Publikasi"."publishedAt" DESC LIMIT $3 OFFSET $4
-prisma:query SELECT "public"."Opd"."id", "public"."Opd"."kode", "public"."Opd"."nama", "public"."Opd"."singkatan", "public"."Opd"."slug", "public"."Opd"."status", "public"."Opd"."sortOrder", "public"."Opd"."createdAt", "public"."Opd"."updatedAt" FROM "public"."Opd" WHERE "public"."Opd"."id" IN ($1,$2,$3) OFFSET $4
- GET / 200 in 1989ms (next.js: 31ms, application-code: 1958ms)
- GET / 200 in 5.3s (next.js: 2.6s, application-code: 2.7s)
- GET / 200 in 2.0s (next.js: 51ms, application-code: 1991ms)
-✓ Compiled in 29.8s
-  Reload env: .env
-✓ Compiled in 5.3s
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."DatasetPublik"."id", "public"."DatasetPublik"."indikatorId", "public"."DatasetPublik"."periodeId", "public"."DatasetPublik"."version", "public"."DatasetPublik"."status", "public"."DatasetPublik"."publishedAt", "public"."DatasetPublik"."notes" FROM "public"."DatasetPublik" WHERE "public"."DatasetPublik"."status" = $1 ORDER BY "public"."DatasetPublik"."publishedAt" DESC LIMIT $2 OFFSET $3
+prisma:query COMMIT
+ GET /data 200 in 19.8s (next.js: 12.3s, application-code: 7.5s)
+ GET /data 200 in 6.0s (next.js: 2.6s, application-code: 3.4s)
+ GET /data 200 in 7.3s (next.js: 150ms, application-code: 7.1s)
+Pencatatan kunjungan gagal TypeError: Cannot read properties of undefined (reading 'createMany')
+    at POST (src\app\api\public\pengunjung\route.ts:30:27)
+  28 |   try {
+  29 |     // A repeated request with the same event ID must never inflate the count.
+> 30 |     await db.websiteVisit.createMany({ data: [parsed.data], skipDuplicates: true });
+     |                           ^
+  31 |     return NextResponse.json({ ok: true }, { headers: noCache });
+  32 |   } catch (error) {
+  33 |     console.error("Pencatatan kunjungan gagal", error);
+ POST /api/public/pengunjung 503 in 1066ms (next.js: 705ms, application-code: 362ms)
+Pencatatan kunjungan gagal TypeError: Cannot read properties of undefined (reading 'createMany')
+    at POST (src\app\api\public\pengunjung\route.ts:30:27)
+  28 |   try {
+  29 |     // A repeated request with the same event ID must never inflate the count.
+> 30 |     await db.websiteVisit.createMany({ data: [parsed.data], skipDuplicates: true });
+     |                           ^
+  31 |     return NextResponse.json({ ok: true }, { headers: noCache });
+  32 |   } catch (error) {
+  33 |     console.error("Pencatatan kunjungan gagal", error);
+ POST /api/public/pengunjung 503 in 111ms (next.js: 18ms, application-code: 93ms)
+✓ Compiled in 723ms

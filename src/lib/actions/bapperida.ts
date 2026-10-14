@@ -6,6 +6,8 @@ import { db } from "@/lib/db";
 import { logActivity } from "@/lib/audit";
 import { requireInternal, recomputeProgres } from "@/lib/actions/helpers";
 import type { ActionResult } from "@/lib/actions/admin";
+import { Prisma } from "@prisma/client";
+import { parseDateBoundary } from "@/lib/questionnaire";
 
 // ============ PERIODE ============
 
@@ -14,24 +16,33 @@ export async function createPeriode(formData: FormData): Promise<ActionResult> {
     const actor = await requireInternal(["ADMIN", "BAPPERIDA"]);
     const kode = String(formData.get("kode") ?? "").trim();
     const nama = String(formData.get("nama") ?? "").trim();
-    const startDate = new Date(String(formData.get("startDate") ?? ""));
-    const endDate = new Date(String(formData.get("endDate") ?? ""));
+    const id = String(formData.get("id") ?? "");
+    const startDate = parseDateBoundary(String(formData.get("startDate") ?? ""));
+    const endDate = parseDateBoundary(String(formData.get("endDate") ?? ""), true);
     if (!kode || !nama || isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
       return { ok: false, error: "Kode, nama, dan tanggal yang valid wajib diisi." };
     }
     if (endDate <= startDate) return { ok: false, error: "Tanggal akhir harus setelah tanggal mulai." };
 
     const exists = await db.periodePengisian.findUnique({ where: { kode } });
-    if (exists) return { ok: false, error: "Kode periode sudah digunakan." };
+    if (exists && exists.id !== id) return { ok: false, error: "Kode periode sudah digunakan." };
 
-    const periode = await db.periodePengisian.create({
-      data: { kode, nama, startDate, endDate, status: "AKTIF", createdBy: actor.id },
-    });
-    await logActivity({ actor, action: "CREATE", entityType: "PeriodePengisian", entityId: periode.id, detail: `Membuat periode ${nama}` });
+    const status = formData.get("status") === "DITUTUP" ? "DITUTUP" : "AKTIF";
+    const data = { kode, nama, startDate, endDate, status, lockAt: status === "DITUTUP" ? new Date() : null };
+    const periode = await db.$transaction(async tx => {
+      if (id) {
+        const deadlines = await tx.penugasanOpd.findMany({ where: { periodeId: id, deadline: { not: null } }, select: { deadline: true } });
+        if (deadlines.some(p => p.deadline && (p.deadline < startDate || p.deadline > endDate))) throw new Error("Rentang baru tidak mencakup tenggat penugasan. Sesuaikan tenggat penugasan terlebih dahulu.");
+        return tx.periodePengisian.update({ where: { id }, data });
+      }
+      return tx.periodePengisian.create({ data: { ...data, createdBy: actor.id } });
+    }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+    await logActivity({ actor, action: id ? "UPDATE" : "CREATE", entityType: "PeriodePengisian", entityId: periode.id, detail: `Menyimpan periode ${nama}` });
     revalidatePath("/backoffice/penugasan");
-    return { ok: true, message: `Periode ${nama} berhasil dibuat dan aktif.` };
-  } catch {
-    return { ok: false, error: "Gagal membuat periode." };
+    revalidatePath("/backoffice/pengisian", "layout");
+    return { ok: true, message: `Periode ${nama} berhasil disimpan.` };
+  } catch (error) {
+    return { ok: false, error: error instanceof Error && error.message !== "UNAUTHORIZED" ? error.message : "Akses ditolak." };
   }
 }
 
@@ -59,53 +70,72 @@ export async function createPenugasan(formData: FormData): Promise<ActionResult>
     const actor = await requireInternal(["ADMIN", "BAPPERIDA"]);
     const periodeId = String(formData.get("periodeId") ?? "");
     const indikatorId = String(formData.get("indikatorId") ?? "");
-    const opdIds = formData.getAll("opdIds").map(String);
+    const opdIds = [...new Set(formData.getAll("opdIds").map(String))];
     const deadline = String(formData.get("deadline") ?? "");
 
     if (!periodeId || !indikatorId || opdIds.length === 0) {
       return { ok: false, error: "Periode, indikator, dan minimal satu OPD wajib dipilih." };
     }
 
-    const indikator = await db.indikator.findUnique({
-      where: { id: indikatorId },
-      include: { aspek: { include: { pertanyaan: true } } },
-    });
-    if (!indikator) return { ok: false, error: "Indikator tidak ditemukan." };
-
-    let created = 0;
-    for (const opdId of opdIds) {
-      const exists = await db.penugasanOpd.findFirst({ where: { periodeId, indikatorId, opdId } });
-      if (exists) continue;
-      const penugasan = await db.penugasanOpd.create({
-        data: {
-          periodeId,
-          indikatorId,
-          opdId,
-          deadline: deadline ? new Date(deadline) : null,
-          status: "AKTIF",
-        },
-      });
-      // Semua pertanyaan indikator menjadi target wajib (bisa dipersempit nanti)
-      const allQs = indikator.aspek.flatMap((a) => a.pertanyaan);
-      for (const q of allQs) {
-        await db.penugasanPertanyaan.create({
-          data: { penugasanId: penugasan.id, pertanyaanId: q.id, required: true },
-        });
+    const { created, indicatorName } = await db.$transaction(async tx => {
+      const periode = await tx.periodePengisian.findUnique({ where: { id: periodeId } });
+      if (!periode || periode.status !== "AKTIF" || periode.lockAt || periode.endDate < new Date()) throw new Error("Pilih periode aktif yang belum berakhir.");
+      const indikator = await tx.indikator.findUnique({ where: { id: indikatorId }, include: { aspek: { include: { pertanyaan: { where: { isActive: true } } } } } });
+      if (!indikator?.isActive) throw new Error("Indikator tidak aktif atau tidak ditemukan.");
+      const questions = indikator.aspek.flatMap(a => a.pertanyaan);
+      if (!questions.length) throw new Error("Tambahkan minimal satu pertanyaan aktif pada indikator sebelum membuat penugasan.");
+      if (await tx.opd.count({ where: { id: { in: opdIds }, status: "AKTIF" } }) !== opdIds.length) throw new Error("OPD yang dipilih tidak ditemukan atau nonaktif.");
+      const parsedDeadline = deadline ? parseDateBoundary(deadline, true) : null;
+      if (parsedDeadline && (parsedDeadline < periode.startDate || parsedDeadline > periode.endDate)) throw new Error("Tenggat harus berada dalam rentang periode pengisian.");
+      let created = 0;
+      for (const opdId of opdIds) {
+        if (await tx.penugasanOpd.findUnique({ where: { periodeId_indikatorId_opdId: { periodeId, indikatorId, opdId } } })) continue;
+        await tx.penugasanOpd.create({ data: { periodeId, indikatorId, opdId, deadline: parsedDeadline, status: "AKTIF", pertanyaanTarget: { create: questions.map(q => ({ pertanyaanId: q.id, required: q.wajibDefault })) } } });
+        created++;
       }
-      created++;
-    }
+      return { created, indicatorName: indikator.nama };
+    }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable, timeout: 30000 });
 
     await logActivity({
       actor,
       action: "CREATE",
       entityType: "PenugasanOpd",
-      detail: `Membuat ${created} penugasan indikator ${indikator.nama}`,
+      detail: `Membuat ${created} penugasan indikator ${indicatorName}`,
     });
     revalidatePath("/backoffice/penugasan");
     revalidatePath("/backoffice/monitoring");
-    return { ok: true, message: `${created} penugasan berhasil dibuat untuk indikator ${indikator.nama}.` };
-  } catch {
-    return { ok: false, error: "Gagal membuat penugasan." };
+    revalidatePath("/backoffice/pengisian", "layout");
+    return { ok: true, message: created ? `${created} penugasan dibuat untuk ${indicatorName}. OPD yang sudah ditugaskan dilewati.` : "Seluruh OPD yang dipilih sudah memiliki penugasan. Gunakan pengaturan akses pada daftar penugasan." };
+  } catch (error) {
+    return { ok: false, error: error instanceof Prisma.PrismaClientKnownRequestError ? "Data berubah saat disimpan. Silakan coba lagi." : error instanceof Error && error.message !== "UNAUTHORIZED" ? error.message : "Akses ditolak." };
+  }
+}
+
+export async function updatePenugasan(form: FormData): Promise<ActionResult> {
+  try {
+    const actor = await requireInternal(["ADMIN", "BAPPERIDA"]);
+    const id = String(form.get("id") ?? "");
+    const status = form.get("status") === "AKTIF" ? "AKTIF" : "NONAKTIF";
+    await db.$transaction(async tx => {
+    const assignment = await tx.penugasanOpd.findUnique({ where: { id }, include: { periode: true, jawaban: { select: { status: true } } } });
+    if (!assignment) throw new Error("Penugasan tidak ditemukan.");
+    const value = String(form.get("deadline") ?? "");
+    const deadline = value ? parseDateBoundary(value, true) : null;
+    if (deadline && (deadline < assignment.periode.startDate || deadline > assignment.periode.endDate)) throw new Error("Tenggat harus berada dalam rentang periode pengisian.");
+    await tx.penugasanOpd.update({ where: { id }, data: { status, deadline } });
+    if (status === "AKTIF" && !assignment.jawaban.some(answer => ["DIKIRIM", "TERVERIFIKASI"].includes(answer.status))) {
+      const questions = await tx.pertanyaanIndikator.findMany({ where: { isActive: true, aspek: { indikatorId: assignment.indikatorId } } });
+      for (const q of questions) await tx.penugasanPertanyaan.upsert({ where: { penugasanId_pertanyaanId: { penugasanId: id, pertanyaanId: q.id } }, create: { penugasanId: id, pertanyaanId: q.id, required: q.wajibDefault }, update: { required: q.wajibDefault } });
+    }
+    }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable, timeout: 20000 });
+    await recomputeProgres(id);
+    await logActivity({ actor, action: "UPDATE", entityType: "PenugasanOpd", entityId: id, detail: `Mengubah akses penugasan menjadi ${status}` });
+    revalidatePath("/backoffice/penugasan");
+    revalidatePath("/backoffice/pengisian", "layout");
+    revalidatePath("/backoffice/monitoring");
+    return { ok: true, message: "Akses OPD dan tenggat penugasan disimpan." };
+  } catch (error) {
+    return { ok: false, error: error instanceof Error && error.message !== "UNAUTHORIZED" ? error.message : "Akses ditolak." };
   }
 }
 

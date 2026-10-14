@@ -242,7 +242,7 @@ export default async function BerandaPage() {
             <Link key={opd.id} href={`/opd/${opd.slug}`} className="group">
               <Card className="h-full transition-all group-hover:-translate-y-1 group-hover:border-[#bdcfC2] group-hover:shadow-lg">
                 <CardContent className="p-5">
-                  <OpdIcon name={opd.nama} />
+                  <OpdIcon name={opd.nama} logoUrl={opd.profil?.logoUrl} />
                   <h3 className="mt-4 text-sm font-semibold leading-snug text-slate-900 group-hover:text-[#315f4e]">
                     {opd.nama}
                   </h3>

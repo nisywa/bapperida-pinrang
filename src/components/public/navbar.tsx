@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Menu, X, Lock, House, CircleUserRound, Building2, Newspaper, ChartNoAxesCombined, LibraryBig } from "lucide-react";
+import { Menu, X, Lock, House, CircleUserRound, Building2, Newspaper, ChartNoAxesCombined, LibraryBig, UsersRound } from "lucide-react";
 
 const NAV_ITEMS = [
   { href: "/", label: "Beranda", icon: House },
@@ -13,6 +13,7 @@ const NAV_ITEMS = [
   { href: "/berita", label: "Berita", icon: Newspaper },
   { href: "/data", label: "Data & Statistik", icon: ChartNoAxesCombined },
   { href: "/publikasi", label: "Publikasi", icon: LibraryBig },
+  { href: "/analisis-pengunjung", label: "Analisis Pengunjung", icon: UsersRound },
 ];
 
 export function PublicNavbar({ siteTitle }: { siteTitle: string }) {
@@ -52,12 +53,12 @@ export function PublicNavbar({ siteTitle }: { siteTitle: string }) {
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-1 lg:flex" aria-label="Navigasi utama">
+        <nav className="hidden items-center gap-1 xl:flex" aria-label="Navigasi utama">
           {NAV_ITEMS.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium transition-all ${
+              className={`inline-flex items-center gap-1.5 rounded-full px-2 py-2 text-sm font-medium whitespace-nowrap transition-all ${
                 isActive(item.href)
                   ? "bg-[#e6eee8] text-[#285b4a] shadow-[inset_0_0_0_1px_rgba(57,103,86,0.08)]"
                   : "text-slate-600 hover:bg-slate-100/80 hover:text-[#285b4a]"
@@ -70,7 +71,7 @@ export function PublicNavbar({ siteTitle }: { siteTitle: string }) {
         </nav>
 
         <button
-          className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-[#285b4a] shadow-sm lg:hidden"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-[#285b4a] shadow-sm xl:hidden"
           onClick={() => setOpen(!open)}
           aria-label={open ? "Tutup menu" : "Buka menu"}
           aria-expanded={open}
@@ -80,7 +81,7 @@ export function PublicNavbar({ siteTitle }: { siteTitle: string }) {
       </div>
 
       {open && (
-        <nav className="border-t border-slate-200/70 bg-[#fbfcfa] px-4 py-3 lg:hidden" aria-label="Navigasi mobile">
+        <nav className="border-t border-slate-200/70 bg-[#fbfcfa] px-4 py-3 xl:hidden" aria-label="Navigasi mobile">
           {NAV_ITEMS.map((item) => (
             <Link
               key={item.href}

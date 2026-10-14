@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useAction } from "@/components/backoffice/action-utils";
 import { createOpd, updateOpdStatus, createIndikator, toggleIndikator } from "@/lib/actions/admin";
 import { tutupPeriode } from "@/lib/actions/bapperida";
@@ -18,7 +19,7 @@ import {
 import { Loader2, PlusCircle, Power, Building2, ListTree, MapPin, CalendarClock, Lock } from "lucide-react";
 import { formatTanggal } from "@/lib/constants";
 
-type OpdItem = { id: string; kode: string; nama: string; singkatan: string; slug: string; status: string; users: number; emoji: string };
+type OpdItem = { id: string; kode: string; nama: string; singkatan: string; slug: string; status: string; users: number; logoUrl: string | null };
 type IndItem = { id: string; kode: string; nama: string; satuan: string | null; isActive: boolean; aspek: Array<{ nama: string; jumlahPertanyaan: number }> };
 type WilItem = { id: string; kode: string; nama: string; lat: number; lng: number };
 type PerItem = { id: string; kode: string; nama: string; status: string; startDate: string; endDate: string; penugasan: number };
@@ -83,7 +84,7 @@ export function MasterManager({
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           {opdList.map((o) => (
             <div key={o.id} className="flex items-center gap-3 rounded-xl border p-4">
-              <span className="text-2xl">{o.emoji}</span>
+              <img src={o.logoUrl || "/opd-logo-default.svg"} alt={`Logo ${o.nama}`} className="h-10 w-10 rounded-lg bg-white object-contain" />
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-semibold text-slate-900">{o.nama}</p>
                 <p className="text-xs text-slate-500">{o.kode} · {o.users} akun · /opd/{o.slug}</p>
@@ -102,6 +103,7 @@ export function MasterManager({
 
       {/* ===== INDIKATOR ===== */}
       <TabsContent value="indikator" className="mt-4 space-y-4">
+        <Button asChild variant="outline"><Link href="/backoffice/indikator">Kelola aspek & pertanyaan indikator →</Link></Button>
         {canManage && (
           <Dialog>
             <DialogTrigger asChild>

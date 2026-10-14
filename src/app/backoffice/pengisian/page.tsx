@@ -63,6 +63,7 @@ export default async function PengisianPage() {
                         <p className="mt-0.5 text-xs text-slate-500">
                           {r.indikatorKode} · Deadline {formatTanggal(r.deadline)}
                         </p>
+                        <p className="mt-1 text-xs text-slate-500">{r.periodeNama}</p>
                       </div>
                       <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium ${st?.color}`}>
                         <span className={`h-1.5 w-1.5 rounded-full ${st?.dot}`} /> {st?.label ?? "Belum Diisi"}
@@ -80,10 +81,11 @@ export default async function PengisianPage() {
                       </div>
                       <span className="text-xs font-medium text-slate-600">{formatNumber(r.percent, 0)}%</span>
                     </div>
+                    {r.fillingUnavailable && <p className="mt-3 text-xs text-amber-700">{r.fillingUnavailable}</p>}
                     <Button asChild className="mt-4 w-full bg-emerald-600 hover:bg-emerald-700">
                       <Link href={`/backoffice/pengisian/${r.penugasanId}`}>
                         <FileEdit className="mr-2 h-4 w-4" />
-                        {r.status === "BELUM" ? "Mulai Mengisi" : r.status === "PERLU_PERBAIKAN" ? "Perbaiki Data" : "Lanjutkan Mengisi"}
+                        {r.fillingUnavailable ? "Lihat penugasan" : r.status === "BELUM" ? "Mulai Mengisi" : r.status === "PERLU_PERBAIKAN" ? "Perbaiki Data" : "Lanjutkan Mengisi"}
                       </Link>
                     </Button>
                   </CardContent>

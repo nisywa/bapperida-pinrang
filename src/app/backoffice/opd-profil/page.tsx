@@ -41,7 +41,7 @@ export default async function OpdProfilPage() {
         opdNama={opd.nama}
         opdSlug={opd.slug}
         initial={{
-          logoEmoji: opd.profil?.logoEmoji ?? "🏛️",
+          logoUrl: opd.profil?.logoUrl ?? null,
           deskripsi: opd.profil?.deskripsi ?? "",
           visi: opd.profil?.visi ?? "",
           misi: misiText,

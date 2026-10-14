@@ -17,7 +17,7 @@ export default async function MasterPage() {
     db.opd.findMany({ orderBy: { sortOrder: "asc" }, include: { profil: true, _count: { select: { users: true } } } }),
     db.indikator.findMany({
       orderBy: { sortOrder: "asc" },
-      include: { aspek: { include: { pertanyaan: true } } },
+      include: { aspek: { include: { pertanyaan: { where: { isActive: true } } } } },
     }),
     db.wilayah.findMany({ orderBy: { kodeBps: "asc" } }),
     db.periodePengisian.findMany({ orderBy: { startDate: "desc" }, include: { _count: { select: { penugasan: true } } } }),
@@ -40,7 +40,7 @@ export default async function MasterPage() {
             canManage={session.role === "ADMIN" || session.role === "BAPPERIDA"}
             opdList={opdList.map((o) => ({
               id: o.id, kode: o.kode, nama: o.nama, singkatan: o.singkatan, slug: o.slug,
-              status: o.status, users: o._count.users, emoji: o.profil?.logoEmoji ?? "🏛️",
+              status: o.status, users: o._count.users, logoUrl: o.profil?.logoUrl ?? null,
             }))}
             indikatorList={indikatorList.map((i) => ({
               id: i.id, kode: i.kode, nama: i.nama, satuan: i.satuanDefault, isActive: i.isActive,

@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Save, Send, MapPin, FileUp, FileText, X } from "lucide-react";
+import { checkboxValues } from "@/lib/questionnaire";
 
 type Q = {
   id: string;
@@ -20,6 +21,7 @@ type Q = {
   satuan: string | null;
   helpText: string | null;
   dimensiWilayah: boolean;
+  required: boolean;
   opsi: string[];
 };
 type Aspek = { id: string; nama: string; pertanyaan: Q[] };
@@ -59,7 +61,7 @@ export function PengisianForm({
 
   const keyOf = (q: Q, wilayahId?: string | null) => `${q.id}:${wilayahId ?? "-"}`;
   const allQuestions = useMemo(() => aspekList.flatMap((a) => a.pertanyaan), [aspekList]);
-  const filledCount = Object.values(values).filter((v) => v.text || v.number || v.bool !== undefined || v.date).length;
+  const filledCount = Object.values(values).filter((v) => (v.text && v.text !== "[]") || v.number || v.bool !== undefined || v.date).length;
   const totalCount = useMemo(
     () => allQuestions.reduce((acc, q) => acc + (q.dimensiWilayah ? wilayahList.length : 1), 0),
     [allQuestions, wilayahList.length]
@@ -135,7 +137,7 @@ export function PengisianForm({
     } else toast.error(res2.error ?? "Gagal mengirim.");
   }
 
-  const disabled = readOnly || !periodeAktif;
+  const disabled = readOnly || !periodeAktif || loading !== null;
 
   return (
     <div className="space-y-5">
@@ -160,6 +162,7 @@ export function PengisianForm({
                 <div className="flex flex-wrap items-center gap-2">
                   <p className="text-sm font-medium text-slate-900">{q.pertanyaan}</p>
                   <Badge variant="secondary" className="text-[10px]">{q.tipeLabel}</Badge>
+                  <Badge variant="outline" className="text-[10px]">{q.required ? "Wajib" : "Opsional"}</Badge>
                   {q.satuan && <Badge variant="outline" className="text-[10px]">{q.satuan}</Badge>}
                   {q.dimensiWilayah && <Badge variant="outline" className="text-[10px]"><MapPin className="mr-1 h-2.5 w-2.5" />per kecamatan</Badge>}
                 </div>
@@ -180,7 +183,7 @@ export function PengisianForm({
           <p className="text-xs text-slate-500">
             {periodeAktif
               ? "Simpan draft berulang kali. Pengiriman hanya dapat dilakukan bila seluruh pertanyaan wajib lengkap."
-              : "Periode pengisian telah ditutup — data tidak dapat diubah."}
+              : "Pengisian belum dibuka, sudah berakhir, atau dinonaktifkan — data tidak dapat diubah."}
           </p>
           <div className="flex gap-2">
             <Button variant="outline" onClick={saveDraft} disabled={loading !== null || !periodeAktif}>
@@ -218,25 +221,7 @@ function WilayahInputs({
               <tr key={w.id} className="border-b last:border-0">
                 <td className="w-40 px-3 py-1.5 text-xs font-medium text-slate-600">{w.nama}</td>
                 <td className="px-3 py-1.5">
-                  {q.tipe === "NUMBER" ? (
-                    <Input
-                      type="number"
-                      inputMode="decimal"
-                      step="any"
-                      className="h-8 max-w-32 bg-white text-right text-sm"
-                      placeholder={`nilai ${q.satuan ?? ""}`}
-                      value={v?.number ?? ""}
-                      disabled={disabled}
-                      onChange={(e) => setValue(key, { number: e.target.value })}
-                    />
-                  ) : (
-                    <Input
-                      className="h-8 max-w-full bg-white text-sm"
-                      value={v?.text ?? ""}
-                      disabled={disabled}
-                      onChange={(e) => setValue(key, { text: e.target.value })}
-                    />
-                  )}
+                  <SingleInput q={q} value={v} setValue={setValue} disabled={disabled} cellKey={key} />
                 </td>
               </tr>
             );
@@ -248,14 +233,15 @@ function WilayahInputs({
 }
 
 function SingleInput({
-  q, value, setValue, disabled,
+  q, value, setValue, disabled, cellKey,
 }: {
   q: Q;
   value?: CellValue;
   setValue: (key: string, patch: CellValue) => void;
   disabled: boolean;
+  cellKey?: string;
 }) {
-  const key = `${q.id}:-`;
+  const key = cellKey ?? `${q.id}:-`;
   const [uploading, setUploading] = useState(false);
 
   async function uploadFile(file?: File) {
@@ -323,7 +309,18 @@ function SingleInput({
       </div>
     );
   }
-  if (q.tipe === "OPTIONS") {
+  if (q.tipe === "RADIO" || q.tipe === "CHECKBOX") {
+    const selected = checkboxValues(value?.text);
+    return <fieldset disabled={disabled} className="flex flex-wrap gap-x-6 gap-y-3" aria-label={q.pertanyaan}>
+      {q.opsi.map(option => <label key={option} className="flex cursor-pointer items-center gap-2 text-sm">
+        <input type={q.tipe === "RADIO" ? "radio" : "checkbox"} name={`answer-${key}`} value={option}
+          checked={q.tipe === "RADIO" ? value?.text === option : selected.includes(option)}
+          onChange={event => setValue(key, { text: q.tipe === "RADIO" ? option : JSON.stringify(event.target.checked ? [...selected, option] : selected.filter(item => item !== option)) })}
+          className="h-4 w-4 accent-emerald-700" />{option}
+      </label>)}
+    </fieldset>;
+  }
+  if (q.tipe === "OPTIONS" || q.tipe === "DROPDOWN") {
     return (
       <select
         className="h-10 max-w-xs rounded-lg border bg-white px-3 text-sm"

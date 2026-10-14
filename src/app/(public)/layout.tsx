@@ -1,6 +1,7 @@
 import { publicDb as db } from "@/lib/public-db";
 import { PublicNavbar } from "@/components/public/navbar";
 import { PublicFooter } from "@/components/public/footer";
+import { VisitTracker } from "@/components/public/visit-tracker";
 
 // Read public data at request time, without database queries during build.
 export const dynamic = "force-dynamic";
@@ -15,6 +16,7 @@ export default async function PublicLayout({
 
   return (
     <div className="flex min-h-screen flex-col bg-[#f5f7f4]">
+      <VisitTracker />
       <PublicNavbar siteTitle={s("site_title", "Bapperida Kabupaten Pinrang")} />
       <main className="flex-1">{children}</main>
       <PublicFooter

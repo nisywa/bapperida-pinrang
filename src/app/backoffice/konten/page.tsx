@@ -9,8 +9,8 @@ export const metadata = { title: "Konten Portal" };
 
 export default async function KontenPage() {
   const session = await getSession();
-  if (!session || session.role === "OPD") {
-    return <p className="text-sm text-slate-600">Akses ditolak.</p>;
+  if (!session || session.role !== "BAPPERIDA") {
+    return <p className="text-sm text-slate-600">Pengelolaan konten hanya tersedia untuk Bapperida.</p>;
   }
 
   const [artikels, publikasis] = await Promise.all([
@@ -25,7 +25,7 @@ export default async function KontenPage() {
           <Newspaper className="h-6 w-6 text-emerald-600" /> Konten Portal
         </h1>
         <p className="mt-1 text-sm text-slate-600">
-          Kelola artikel dan publikasi portal utama. Artikel baru hanya dapat ditambahkan Bapperida. Klik Terbitkan agar informasi dapat dilihat masyarakat.
+          Kelola artikel dan publikasi portal sebagai Bapperida. Klik Terbitkan agar informasi dapat dilihat masyarakat.
         </p>
       </div>
 

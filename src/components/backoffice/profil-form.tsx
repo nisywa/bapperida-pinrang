@@ -10,8 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Save } from "lucide-react";
-
-const EMOJI_CHOICES = ["🏛️", "🏥", "🎓", "🛣️", "🏭", "🤝", "🌾", "📡", "🏘️", "💼", "🚧", "⚖️", "🏞️", "🚌"];
+import { OpdLogoInput } from "@/components/backoffice/opd-logo-input";
 
 export function ProfilForm({
   opdId,
@@ -23,7 +22,7 @@ export function ProfilForm({
   opdNama: string;
   opdSlug: string;
   initial: {
-    logoEmoji: string;
+    logoUrl: string | null;
     deskripsi: string;
     visi: string;
     misi: string;
@@ -34,21 +33,22 @@ export function ProfilForm({
   };
 }) {
   const router = useRouter();
-  const [emoji, setEmoji] = useState(initial.logoEmoji);
   const [loading, setLoading] = useState(false);
 
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     fd.set("opdId", opdId);
-    fd.set("logoEmoji", emoji);
+    if (loading) return;
     setLoading(true);
-    const res = await simpanProfilOpd(fd);
-    setLoading(false);
-    if (res.ok) {
-      toast.success(res.message ?? "Profil diperbarui.");
-      router.refresh();
-    } else toast.error(res.error ?? "Gagal menyimpan profil.");
+    try {
+      const res = await simpanProfilOpd(fd);
+      if (res.ok) {
+        toast.success(res.message ?? "Profil diperbarui.");
+        router.refresh();
+      } else toast.error(res.error ?? "Gagal menyimpan profil.");
+    } catch { toast.error("Koneksi terputus. Silakan coba lagi."); }
+    finally { setLoading(false); }
   }
 
   return (
@@ -99,33 +99,10 @@ export function ProfilForm({
 
       <Card className="border shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base">Logo (Emoji)</CardTitle>
+          <CardTitle className="text-base">Logo Dinas</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-7 gap-2">
-            {EMOJI_CHOICES.map((e) => (
-              <button
-                key={e}
-                type="button"
-                onClick={() => setEmoji(e)}
-                className={`flex h-11 w-11 items-center justify-center rounded-xl border text-2xl transition-all ${
-                  emoji === e ? "border-emerald-500 bg-emerald-50 shadow-sm" : "hover:border-slate-300 hover:bg-slate-50"
-                }`}
-              >
-                {e}
-              </button>
-            ))}
-          </div>
-          <div className="mt-6 rounded-2xl bg-gradient-to-br from-slate-900 to-emerald-950 p-5 text-white">
-            <p className="text-xs text-emerald-300">Pratinjau Header</p>
-            <div className="mt-3 flex items-center gap-3">
-              <span className="flex h-14 w-14 items-center justify-center rounded-xl bg-white/10 text-3xl">{emoji}</span>
-              <div className="min-w-0">
-                <p className="truncate text-sm font-bold">{opdNama}</p>
-                <p className="truncate text-xs text-emerald-300">/opd/{opdSlug}</p>
-              </div>
-            </div>
-          </div>
+          <OpdLogoInput key={initial.logoUrl} initialUrl={initial.logoUrl} nama={opdNama} slug={opdSlug} />
         </CardContent>
       </Card>
     </form>

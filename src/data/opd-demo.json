@@ -1,0 +1,10 @@
+[
+  { "slug": "dinas-kesehatan", "nama": "Dinas Kesehatan", "indikator": ["IND-01", "IND-05"] },
+  { "slug": "dinas-pendidikan-dan-kebudayaan", "nama": "Dinas Pendidikan dan Kebudayaan", "indikator": ["IND-02", "IND-05"] },
+  { "slug": "dinas-pekerjaan-umum-dan-penataan-ruang", "nama": "Dinas Pekerjaan Umum dan Penataan Ruang", "indikator": ["IND-03", "IND-04"] },
+  { "slug": "dinas-perindustrian-perdagangan-koperasi-dan-ukm", "nama": "Dinas Perindustrian, Perdagangan, Koperasi dan UKM", "indikator": ["IND-04", "IND-03"] },
+  { "slug": "dinas-sosial", "nama": "Dinas Sosial", "indikator": ["IND-05", "IND-01"] },
+  { "slug": "dinas-ketahanan-pangan", "nama": "Dinas Ketahanan Pangan", "indikator": ["IND-04", "IND-01"] },
+  { "slug": "dinas-komunikasi-dan-informatika", "nama": "Dinas Komunikasi dan Informatika", "indikator": ["IND-03", "IND-02"] },
+  { "slug": "dinas-pemberdayaan-masyarakat-dan-desa", "nama": "Dinas Pemberdayaan Masyarakat dan Desa", "indikator": ["IND-05", "IND-04"] }
+]

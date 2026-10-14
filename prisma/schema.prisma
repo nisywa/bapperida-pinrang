@@ -66,6 +66,7 @@ model OpdProfile {
   id             String  @id @default(cuid())
   opdId          String  @unique
   logoEmoji      String  @default("🏛️")
+  logoUrl        String?
   warnaTema      String  @default("teal")
   deskripsi      String?
   visi           String?
@@ -129,7 +130,7 @@ model PertanyaanIndikator {
   aspekId     String
   kode        String  @unique
   pertanyaan  String
-  tipeJawaban String  @default("NUMBER") // TEXT | NUMBER | DATE | BOOLEAN | OPTIONS | FILE
+  tipeJawaban String  @default("NUMBER") // RADIO | CHECKBOX | NUMBER | TEXT | DROPDOWN; legacy: DATE | BOOLEAN | OPTIONS | FILE
   wajibDefault Boolean @default(true)
   dimensiWilayah Boolean @default(false) // nilai per kecamatan
   satuan      String?
@@ -443,6 +444,27 @@ model DatasetPublikDetail {
 }
 
 // ---------- System ----------
+
+model WebsiteVisit {
+  id        String   @id
+  visitorId String
+  pathname  String
+  createdAt DateTime @default(now())
+
+  @@index([createdAt, visitorId])
+}
+
+model KritikSaran {
+  id        String   @id @default(cuid())
+  nama      String
+  email     String?
+  telepon   String?
+  jenis     String
+  pesan     String
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
 
 model SiteSetting {
   id        String   @id @default(cuid())

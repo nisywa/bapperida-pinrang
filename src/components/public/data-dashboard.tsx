@@ -81,7 +81,7 @@ export async function DataDashboardSection({
       {metrics.length > 1 && (
         <div className="rounded-xl border bg-white p-4 shadow-sm">
           <p className="mb-2.5 text-xs font-semibold uppercase tracking-wide text-slate-500">
-            Indikator/Metric Tersedia
+            Aspek Tersedia
           </p>
           <div className="flex flex-wrap gap-2">
             {metrics.map((m) => (

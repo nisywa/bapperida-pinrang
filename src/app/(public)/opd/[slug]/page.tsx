@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, FileDown, Newspaper, Eye, Target, ListChecks } from "lucide-react";
 import { ArticleIcon } from "@/components/public/article-icon";
+import { OpdIcon } from "@/components/public/opd-icon";
 
 export const revalidate = 60;
 
@@ -49,7 +50,7 @@ export default async function OpdBerandaPage({
       <section className="grid gap-5 lg:grid-cols-3">
         <Card className="border shadow-sm lg:col-span-2">
           <CardContent className="p-6 md:p-8">
-            <h2 className="text-lg font-bold text-slate-900">Profil {opd.singkatan}</h2>
+            <div className="flex items-center gap-4"><OpdIcon name={opd.nama} logoUrl={opd.profil?.logoUrl} /><h2 className="text-lg font-bold text-slate-900">Profil {opd.singkatan}</h2></div>
             <p className="mt-3 text-sm leading-relaxed text-slate-700">{opd.profil?.deskripsi}</p>
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
               <div className="rounded-xl bg-emerald-50/70 p-4">

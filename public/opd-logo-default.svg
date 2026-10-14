@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160">
+  <rect width="160" height="160" rx="24" fill="#f1f5f9"/>
+  <g fill="none" stroke="#94a3b8" stroke-width="4" stroke-linejoin="round">
+    <path d="M42 65 80 43l38 22H42ZM48 70v35m21-35v35m22-35v35m21-35v35M40 109h80"/>
+  </g>
+  <text x="80" y="133" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#64748b">Belum upload logo</text>
+</svg>

@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { fillingError } from "@/lib/questionnaire";
 
 export type MonitoringRow = {
   penugasanId: string;
@@ -16,6 +17,7 @@ export type MonitoringRow = {
   jawabanId: string | null;
   periodeStatus: string;
   periodeNama: string;
+  fillingUnavailable: string | null;
 };
 
 export type MonitoringFilters = {
@@ -35,14 +37,8 @@ export function filterMonitoringRows(rows: MonitoringRow[], filters: MonitoringF
 
 /** Semua penugasan pada periode aktif + status jawaban + progres */
 export async function getMonitoringRows(periodeId?: string): Promise<MonitoringRow[]> {
-  const periode =
-    periodeId
-      ? await db.periodePengisian.findUnique({ where: { id: periodeId } })
-      : await db.periodePengisian.findFirst({ where: { status: "AKTIF" } });
-  if (!periode) return [];
-
   const penugasanList = await db.penugasanOpd.findMany({
-    where: { periodeId: periode.id },
+    where: periodeId ? { periodeId } : { periode: { status: "AKTIF" } },
     include: {
       opd: true,
       indikator: true,
@@ -70,6 +66,7 @@ export async function getMonitoringRows(periodeId?: string): Promise<MonitoringR
       jawabanId: jawaban?.id ?? null,
       periodeStatus: p.periode.status,
       periodeNama: p.periode.nama,
+      fillingUnavailable: fillingError(p),
     };
   });
 }
